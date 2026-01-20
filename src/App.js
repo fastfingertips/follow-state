@@ -122,6 +122,7 @@ export class FlowApp {
         this.breakTip = document.getElementById('breakTip');
         this.breakTimerDisplay = document.getElementById('breakTimer');
         this.breakProgressRing = document.getElementById('breakProgressRing');
+        this.extendBreakBtn = document.getElementById('extendBreakBtn');
         this.endBreakBtn = document.getElementById('endBreakBtn');
         this.totalSessions = document.getElementById('totalSessions');
         this.totalMinutes = document.getElementById('totalMinutes');
@@ -163,6 +164,7 @@ export class FlowApp {
 
         this.takeBreakBtn.addEventListener('click', () => this.startBreak());
         this.newSessionBtn.addEventListener('click', () => this.resetToWelcome());
+        this.extendBreakBtn.addEventListener('click', () => this.extendBreak());
         this.endBreakBtn.addEventListener('click', () => this.endBreak());
         
         if (this.copyLogBtn) this.copyLogBtn.addEventListener('click', () => this.copyLog());
@@ -235,6 +237,12 @@ export class FlowApp {
             const timeDisplay = totalMins > 0 ? `${totalMins}m` : `${this.totalBreakSeconds}s`;
             this.focusBreakStats.textContent = i18n.t('breakTime', { time: timeDisplay });
         }
+
+        const extendBreakText = document.getElementById('extendBreakText');
+        if (extendBreakText) extendBreakText.textContent = i18n.t('extendBreak');
+        
+        const endBreakText = document.getElementById('endBreakText');
+        if (endBreakText) endBreakText.textContent = i18n.t('endBreak');
         
         // Render ritual options
         this.renderRitualOptions();
@@ -266,6 +274,7 @@ export class FlowApp {
         document.getElementById('takeBreakIcon').innerHTML = getIcon('coffee', 18);
         document.getElementById('newSessionIcon').innerHTML = getIcon('refresh', 18);
         document.getElementById('breakIcon').innerHTML = getIcon('coffee', 64);
+        document.getElementById('extendBreakIcon').innerHTML = getIcon('plus', 18);
         
         // Log Icons
         const copyLogIcon = document.getElementById('copyLogIcon');
@@ -626,18 +635,25 @@ export class FlowApp {
         const breakTips = i18n.getBreakTips();
         this.breakTip.textContent = breakTips[Math.floor(Math.random() * breakTips.length)];
         
-        let seconds = CONFIG.TIMERS.DEFAULT_BREAK_DURATION;
-        this.updateBreakTimer(seconds);
+        this.breakSeconds = CONFIG.TIMERS.DEFAULT_BREAK_DURATION;
+        this.breakTotalDuration = CONFIG.TIMERS.DEFAULT_BREAK_DURATION;
+        this.updateBreakTimer(this.breakSeconds);
         
         this.breakTimer = setInterval(() => {
-            seconds--;
-            this.updateBreakTimer(seconds);
-            if (seconds <= 0) this.endBreak();
+            this.breakSeconds--;
+            this.updateBreakTimer(this.breakSeconds);
+            if (this.breakSeconds <= 0) this.endBreak();
         }, 1000);
     }
     
+    extendBreak() {
+        this.breakSeconds += 120;
+        this.breakTotalDuration += 120;
+        this.updateBreakTimer(this.breakSeconds);
+    }
+    
     updateBreakTimer(seconds) {
-        const total = CONFIG.TIMERS.DEFAULT_BREAK_DURATION;
+        const total = this.breakTotalDuration || CONFIG.TIMERS.DEFAULT_BREAK_DURATION;
         const mins = Math.floor(seconds / 60);
         const secs = seconds % 60;
         const timeStr = `${mins}:${String(secs).padStart(2, '0')}`;

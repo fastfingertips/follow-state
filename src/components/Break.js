@@ -23,6 +23,10 @@ export const Break = () => `
             </div>
 
             <div class="break-actions">
+                <button class="btn btn-premium-secondary" id="extendBreakBtn">
+                    <span class="btn-icon" id="extendBreakIcon"></span>
+                    <span class="btn-text" id="extendBreakText">${i18n.t('extendBreak')}</span>
+                </button>
                 <button class="btn btn-premium-secondary" id="endBreakBtn">
                     <span class="btn-text" id="endBreakText">${i18n.t('endBreak')}</span>
                     <span class="btn-shortcut">ESC</span>

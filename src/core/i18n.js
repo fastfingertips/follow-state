@@ -85,6 +85,7 @@ const translations = {
         // Break
         breakTitle: 'Break Time',
         endBreak: 'End Break',
+        extendBreak: 'Extend (+2m)',
         breakTips: [
             'Get up and walk a bit',
             'Look outside the window',
@@ -191,6 +192,7 @@ const translations = {
         // Break
         breakTitle: 'Mola Zamanı',
         endBreak: 'Molayı Bitir',
+        extendBreak: 'Uzat (+2dk)',
         breakTips: [
             'Kalk ve biraz yürü',
             'Pencereden dışarı bak',
