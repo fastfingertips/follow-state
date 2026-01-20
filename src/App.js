@@ -358,8 +358,13 @@ export class FlowApp {
         this.ritualIcon.innerHTML = getRitualIcon(index);
         this.ritualText.textContent = ritual.text;
         
-        this.ritualOptions.querySelectorAll('.ritual-option').forEach((option, i) => {
-            option.classList.toggle('selected', i === index);
+        const options = this.ritualOptions.querySelectorAll('.ritual-option');
+        options.forEach((option, i) => {
+            const isSelected = i === index;
+            option.classList.toggle('selected', isSelected);
+            if (isSelected) {
+                option.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
         });
 
         this.addLog('Ritual Selected', ritual.text);
