@@ -13,7 +13,6 @@ const translations = {
         
         // Header
         sessions: 'Sessions',
-        sessions: 'Sessions',
         minutes: 'Minutes',
         amoledMode: 'AMOLED Mode',
         
@@ -115,7 +114,6 @@ const translations = {
         appDescription: 'Flow State\'e girmek için tasarlanmış minimalist odaklanma asistanı.',
         
         // Header
-        sessions: 'Oturum',
         sessions: 'Oturum',
         minutes: 'Dakika',
         amoledMode: 'AMOLED Mod',

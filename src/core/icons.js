@@ -115,8 +115,8 @@ function getIcon(name, size = 24) {
     if (!icon) return '';
     
     if (size !== 24) {
-        return icon.replaceAll(/width="24"/g, `width="${size}"`)
-                   .replaceAll(/height="24"/g, `height="${size}"`);
+        return icon.replaceAll('width="24"', `width="${size}"`)
+                   .replaceAll('height="24"', `height="${size}"`);
     }
     return icon;
 }

@@ -434,10 +434,10 @@ export class FlowApp {
         this.focusMinutes.textContent = String(minutes).padStart(2, '0');
         this.focusSeconds.textContent = String(seconds).padStart(2, '0');
         
-        if (!this.isPaused) {
-            document.title = `${timeStr} - ${CONFIG.APP_NAME}`;
-        } else {
+        if (this.isPaused) {
             document.title = `[Paused] ${CONFIG.APP_NAME}`;
+        } else {
+            document.title = `${timeStr} - ${CONFIG.APP_NAME}`;
         }
     }
     
@@ -619,14 +619,12 @@ ${i18n.t('logFooterLink')}`;
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         
-        const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+        const timestamp = new Date().toISOString().replaceAll(/[:.]/g, '-');
         a.href = url;
         a.download = `flow-state-log-${timestamp}.txt`;
         document.body.appendChild(a);
         a.click();
-        document.body.removeChild(a);
-        a.click();
-        document.body.removeChild(a);
+        a.remove();
         URL.revokeObjectURL(url);
     }
 
