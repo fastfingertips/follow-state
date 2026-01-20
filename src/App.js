@@ -45,6 +45,12 @@ export class FlowApp {
         this.selectRandomRitual();
         this.addSVGGradient();
         this.showScreen('welcome'); // Show welcome screen explicitly
+        
+        // Soft focus: Wait for screen fade animation to complete
+        setTimeout(() => {
+            if (this.goalInput) this.goalInput.focus();
+        }, 500);
+
         initFullscreen('fullscreenToggle');
     }
 
