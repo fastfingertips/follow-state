@@ -263,6 +263,11 @@ export class FlowApp {
         if (this.appContainer) {
             this.appContainer.classList.toggle('wide', screenName === 'ritual');
         }
+
+        // Reset title when not in an active timer screen
+        if (!['ninety', 'focus'].includes(screenName) && !this.breakOverlay.classList.contains('active')) {
+            document.title = CONFIG.APP_NAME;
+        }
     }
     
     validateGoal() {
@@ -321,6 +326,8 @@ export class FlowApp {
             if (seconds <= 0) {
                 clearInterval(this.ninetyTimer);
                 this.startFocusSession();
+            } else {
+                document.title = `(${seconds}s) ${CONFIG.APP_NAME}`;
             }
         }, 1000);
     }
@@ -356,8 +363,15 @@ export class FlowApp {
         const elapsed = Math.floor((Date.now() - this.focusStartTime) / 1000);
         const minutes = Math.floor(elapsed / 60);
         const seconds = elapsed % 60;
+        const timeStr = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
         this.focusMinutes.textContent = String(minutes).padStart(2, '0');
         this.focusSeconds.textContent = String(seconds).padStart(2, '0');
+        
+        if (!this.isPaused) {
+            document.title = `${timeStr} - ${CONFIG.APP_NAME}`;
+        } else {
+            document.title = `[Paused] ${CONFIG.APP_NAME}`;
+        }
     }
     
     togglePause() {
@@ -440,7 +454,9 @@ export class FlowApp {
     updateBreakTimer(seconds) {
         const mins = Math.floor(seconds / 60);
         const secs = seconds % 60;
-        this.breakTimerDisplay.textContent = `${mins}:${String(secs).padStart(2, '0')}`;
+        const timeStr = `${mins}:${String(secs).padStart(2, '0')}`;
+        this.breakTimerDisplay.textContent = timeStr;
+        document.title = `☕ ${timeStr} - ${CONFIG.APP_NAME}`;
     }
     
     endBreak() {
