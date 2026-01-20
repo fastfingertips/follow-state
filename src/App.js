@@ -17,6 +17,7 @@ import { Focus } from './components/Focus.js';
 import { EnergyCheck } from './components/EnergyCheck.js';
 import { Complete } from './components/Complete.js';
 import { Break } from './components/Break.js';
+import { LogModal } from './components/LogModal.js';
 
 export class FlowApp {
     currentGoal = '';
@@ -74,6 +75,7 @@ export class FlowApp {
             overlayContainer.innerHTML = `
                 ${EnergyCheck()}
                 ${Break()}
+                ${LogModal()}
             `;
         }
     }
@@ -117,6 +119,7 @@ export class FlowApp {
         this.takeBreakBtn = document.getElementById('takeBreakBtn');
         this.newSessionBtn = document.getElementById('newSessionBtn');
         this.copyLogBtn = document.getElementById('copyLogBtn');
+        this.viewLogBtn = document.getElementById('viewLogBtn');
         this.downloadLogBtn = document.getElementById('downloadLogBtn');
         this.breakOverlay = document.getElementById('breakOverlay');
         this.breakTip = document.getElementById('breakTip');
@@ -124,6 +127,9 @@ export class FlowApp {
         this.breakProgressRing = document.getElementById('breakProgressRing');
         this.extendBreakBtn = document.getElementById('extendBreakBtn');
         this.endBreakBtn = document.getElementById('endBreakBtn');
+        this.logOverlay = document.getElementById('logOverlay');
+        this.closeLogBtn = document.getElementById('closeLogBtn');
+        this.logContentArea = document.getElementById('logContentArea');
         this.totalSessions = document.getElementById('totalSessions');
         this.totalMinutes = document.getElementById('totalMinutes');
         this.langToggle = document.getElementById('langToggle');
@@ -168,7 +174,13 @@ export class FlowApp {
         this.endBreakBtn.addEventListener('click', () => this.endBreak());
         
         if (this.copyLogBtn) this.copyLogBtn.addEventListener('click', () => this.copyLog());
+        if (this.viewLogBtn) this.viewLogBtn.addEventListener('click', () => this.viewLog());
         if (this.downloadLogBtn) this.downloadLogBtn.addEventListener('click', () => this.downloadLog());
+        
+        if (this.closeLogBtn) this.closeLogBtn.addEventListener('click', () => this.closeLog());
+        if (this.logOverlay) this.logOverlay.addEventListener('click', (e) => {
+            if (e.target === this.logOverlay) this.closeLog();
+        });
 
         // Static events (these elements are in index.html and NOT re-created)
         if (isInitial) {
@@ -280,8 +292,14 @@ export class FlowApp {
         const copyLogIcon = document.getElementById('copyLogIcon');
         if (copyLogIcon) copyLogIcon.innerHTML = getIcon('copy', 14);
         
+        const viewLogIcon = document.getElementById('viewLogIcon');
+        if (viewLogIcon) viewLogIcon.innerHTML = getIcon('list', 14);
+        
         const downloadLogIcon = document.getElementById('downloadLogIcon');
         if (downloadLogIcon) downloadLogIcon.innerHTML = getIcon('download', 14);
+
+        const closeLogIcon = document.getElementById('closeLogIcon');
+        if (closeLogIcon) closeLogIcon.innerHTML = getIcon('x', 24);
 
         // Footer Icons
         document.getElementById('footerVersionIcon').innerHTML = getIcon('hash', 14);
@@ -777,6 +795,20 @@ ${i18n.t('logFooterLink')}`;
         URL.revokeObjectURL(url);
     }
 
+    viewLog() {
+        const logContent = this.generateLog();
+        if (this.logContentArea && this.logOverlay) {
+            this.logContentArea.textContent = logContent;
+            this.logOverlay.classList.remove('hidden');
+        }
+    }
+
+    closeLog() {
+        if (this.logOverlay) {
+            this.logOverlay.classList.add('hidden');
+        }
+    }
+    
     toggleTheme() {
         const isAmoled = document.body.classList.toggle('amoled-mode');
         localStorage.setItem(CONFIG.STORAGE.AMOLED_MODE, isAmoled);

@@ -98,6 +98,7 @@ const translations = {
         
         // Log Actions
         copyLog: 'Copy Log',
+        viewLog: 'View Log',
         downloadLog: 'Download Log',
         logCopied: 'Copied!',
         
@@ -205,6 +206,7 @@ const translations = {
         
         // Log Actions
         copyLog: 'Log Kopyala',
+        viewLog: 'Logu Gör',
         downloadLog: 'Log İndir',
         logCopied: 'Kopyalandı!',
         
