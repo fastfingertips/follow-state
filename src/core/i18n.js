@@ -1,0 +1,233 @@
+/**
+ * Flow State - Internationalization Module
+ * Supports: English (en), Turkish (tr)
+ */
+import { CONFIG } from './config.js';
+
+
+const translations = {
+    en: {
+        // App
+        appName: 'Flow State',
+        appDescription: 'Minimalist focus assistant designed to achieve Flow State.',
+        
+        // Header
+        sessions: 'Sessions',
+        minutes: 'Minutes',
+        
+        // Welcome Screen
+        welcomeTitle1: 'Ready for',
+        welcomeTitle2: 'the Flow?',
+        welcomeSubtitle: 'Focus on a single goal, complete your ritual, and start to enter Flow State.',
+        goalPlaceholder: 'What will you work on now?',
+        startButton: 'Focus on Goal',
+        quickSelect: 'Quick Select:',
+        quickCode: 'Code',
+        quickDesign: 'Design',
+        quickWriting: 'Writing',
+        quickLearning: 'Learning',
+        
+        // Ritual Screen
+        step1of2: 'Step 1/2',
+        ritualTitle: 'Starting Ritual',
+        ritualDesc: 'Complete this ritual before entering the flow',
+        anotherRitual: 'Another Ritual',
+        done: 'Done!',
+        allRituals: 'All Rituals',
+        
+        // Rituals
+        rituals: [
+            { text: 'Take a deep breath and hold for 5 seconds, then exhale slowly' },
+            { text: 'Open your favorite Lo-Fi or focus music' },
+            { text: 'Clear the clutter on your desk, clean your space' },
+            { text: 'Drink a glass of water or place one nearby' },
+            { text: 'Put your phone on silent and in another room' },
+            { text: 'Close unnecessary tabs and applications' },
+            { text: 'Write your goal on paper and place it in front of you' },
+            { text: 'Do a 30-second stretching movement' },
+            { text: 'Close your eyes and visualize your goal for 10 seconds' },
+            { text: 'Turn off all notifications (Focus mode)' }
+        ],
+        
+        // 90 Seconds Screen
+        step2of2: 'Step 2/2',
+        ninetyTitle: '90 Second Rule',
+        ninetyDesc: "Don't wait for motivation, just start for 90 seconds!",
+        start90: 'Start 90 Seconds',
+        continuing: 'Continue...',
+        ninetyMotivation: '"The first step is the hardest step"',
+        
+        // Focus Screen
+        focusLabel: 'You are now focusing on:',
+        inFlow: 'In the flow...',
+        paused: 'Paused',
+        energyHigh: 'Energy high!',
+        continuing2: 'Continuing...',
+        
+        // Energy Check
+        energyTitle: 'Energy Check',
+        energyQuestion: 'Are you still energetic or is it getting difficult?',
+        energyGood: "I'm great!",
+        energyMid: 'Managing',
+        energyLow: 'Need a break',
+        
+        // Complete Screen
+        completeTitle: 'Great Job!',
+        completeSubtitle: 'You successfully completed this session',
+        goal: 'goal',
+        takeBreak: 'Take a Break',
+        newSession: 'New Session',
+        
+        // Break
+        breakTitle: 'Break Time',
+        endBreak: 'End Break',
+        breakTips: [
+            'Get up and walk a bit',
+            'Look outside the window',
+            'Do some stretches',
+            'Drink a glass of water',
+            'Do deep breathing exercises',
+            'Rest your eyes',
+            'Get a small snack'
+        ]
+    },
+    
+    tr: {
+        // App
+        appName: 'Flow State',
+        appDescription: 'Flow State\'e girmek için tasarlanmış minimalist odaklanma asistanı.',
+        
+        // Header
+        sessions: 'Oturum',
+        minutes: 'Dakika',
+        
+        // Welcome Screen
+        welcomeTitle1: 'Akışa',
+        welcomeTitle2: 'Hazır mısın?',
+        welcomeSubtitle: 'Flow State\'e girmek için tek bir hedefe odaklan, ritüelini tamamla ve başla.',
+        goalPlaceholder: 'Şu an ne üzerinde çalışacaksın?',
+        startButton: 'Hedefe Odaklan',
+        quickSelect: 'Hızlı Seçim:',
+        quickCode: 'Kod',
+        quickDesign: 'Tasarım',
+        quickWriting: 'Yazı',
+        quickLearning: 'Öğrenme',
+        
+        // Ritual Screen
+        step1of2: 'Adım 1/2',
+        ritualTitle: 'Başlangıç Ritüeli',
+        ritualDesc: 'Akışa girmeden önce bu ritüeli tamamla',
+        anotherRitual: 'Başka Ritüel',
+        done: 'Yaptım!',
+        allRituals: 'Tüm Ritüeller',
+        
+        // Rituals
+        rituals: [
+            { text: 'Derin bir nefes al ve 5 saniye tut, sonra yavaşça ver' },
+            { text: 'Favori Lo-Fi veya odaklanma müziğini aç' },
+            { text: 'Masandaki dağınıklığı kenara it, alanını temizle' },
+            { text: 'Bir bardak su iç veya yanına koy' },
+            { text: 'Telefonunu sessiz ve başka bir odaya koy' },
+            { text: 'Gereksiz sekmeleri ve uygulamaları kapat' },
+            { text: 'Hedefini bir kağıda yaz ve önüne koy' },
+            { text: '30 saniyelik bir germe hareketi yap' },
+            { text: 'Gözlerini kapat ve hedefini 10 saniye gözünde canlandır' },
+            { text: 'Tüm bildirimleri kapat (Focus mode)' }
+        ],
+        
+        // 90 Seconds Screen
+        step2of2: 'Adım 2/2',
+        ninetyTitle: '90 Saniye Kuralı',
+        ninetyDesc: 'Motivasyon bekleme, sadece 90 saniye başla!',
+        start90: '90 Saniye Başlat',
+        continuing: 'Devam et...',
+        ninetyMotivation: '"İlk adım en zor adımdır"',
+        
+        // Focus Screen
+        focusLabel: 'Şu an odaklanıyorsun:',
+        inFlow: 'Akış halinde...',
+        paused: 'Duraklatıldı',
+        energyHigh: 'Enerji yüksek!',
+        continuing2: 'Devam ediyorsun...',
+        
+        // Energy Check
+        energyTitle: 'Enerji Kontrolü',
+        energyQuestion: 'Hala enerjik misin yoksa zorluyor mu?',
+        energyGood: 'Harikayım!',
+        energyMid: 'İdare eder',
+        energyLow: 'Mola lazım',
+        
+        // Complete Screen
+        completeTitle: 'Harika İş!',
+        completeSubtitle: 'Bu oturumu başarıyla tamamladın',
+        goal: 'hedef',
+        takeBreak: 'Mola Al',
+        newSession: 'Yeni Oturum',
+        
+        // Break
+        breakTitle: 'Mola Zamanı',
+        endBreak: 'Molayı Bitir',
+        breakTips: [
+            'Kalk ve biraz yürü',
+            'Pencereden dışarı bak',
+            'Germe hareketleri yap',
+            'Bir bardak su iç',
+            'Derin nefes egzersizi yap',
+            'Gözlerini dinlendir',
+            'Küçük bir atıştırmalık al'
+        ]
+    }
+};
+
+class I18n {
+    constructor() {
+        this.currentLang = this.detectLanguage();
+    }
+    
+    detectLanguage() {
+        // Check localStorage first
+        const saved = localStorage.getItem(CONFIG.STORAGE.LANG);
+        if (saved && translations[saved]) {
+            return saved;
+        }
+        
+        // Check browser language
+        const browserLang = navigator.language.split('-')[0];
+        return translations[browserLang] ? browserLang : CONFIG.I18N.DEFAULT_LANG;
+    }
+    
+    setLanguage(lang) {
+        if (translations[lang]) {
+            this.currentLang = lang;
+            localStorage.setItem(CONFIG.STORAGE.LANG, lang);
+            document.documentElement.lang = lang;
+            return true;
+        }
+        return false;
+    }
+    
+    t(key) {
+        return translations[this.currentLang][key] || translations[CONFIG.I18N.DEFAULT_LANG][key] || key;
+    }
+    
+    getRituals() {
+        return this.t('rituals');
+    }
+    
+    getBreakTips() {
+        return this.t('breakTips');
+    }
+    
+    getCurrentLang() {
+        return this.currentLang;
+    }
+    
+    getAvailableLanguages() {
+        return Object.keys(translations);
+    }
+}
+
+// Export singleton instance
+const i18n = new I18n();
+export default i18n;
+export { I18n, translations };

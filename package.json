@@ -1,0 +1,31 @@
+{
+  "name": "flow-state",
+  "description": "Minimalist focus assistant designed to achieve Flow State using the 90-Second Rule.",
+  "author": "FastFingertips",
+  "license": "MIT",
+  "homepage": "https://github.com/FastFingertips/follow-state#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FastFingertips/follow-state.git"
+  },
+  "bugs": {
+    "url": "https://github.com/FastFingertips/follow-state/issues"
+  },
+  "keywords": [
+    "focus",
+    "productivity",
+    "zen",
+    "flow-state",
+    "timer",
+    "minimalist"
+  ],
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^6.0.0"
+  }
+}

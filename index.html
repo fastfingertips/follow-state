@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flow State | Zen Focus</title>
+    <meta name="description" content="A professional, distraction-free focus assistant designed to help you reach Flow State.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="bg-visuals">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+    <div id="app" class="app-container">
+        <!-- Main App Container -->
+        <main class="main-content" id="mainContent">
+            <!-- Header -->
+            <header class="header">
+                <div class="logo">
+                    <span class="logo-icon" id="logoIcon"></span>
+                    <span class="logo-text" id="logoText">Flow State</span>
+                </div>
+                
+                <div class="header-controls">
+                    <button class="icon-btn" id="fullscreenToggle" title="Toggle Fullscreen">
+                        <span id="fullscreenIcon"></span>
+                    </button>
+                    <button class="lang-toggle" id="langToggle" title="Change Language">
+                        <span id="langIcon"></span>
+                        <span id="langText">TR</span>
+                    </button>
+                    <!-- Visual stats hidden in Zen mode, accessible on complete screen -->
+                    <div class="header-stats hidden" id="headerStats">
+                        <div class="stat-item">
+                            <span class="stat-value" id="totalSessions">0</span>
+                            <span class="stat-label" id="sessionsLabel">Sessions</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="totalMinutes">0</span>
+                            <span class="stat-label" id="minutesLabel">Minutes</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Screens Container -->
+            <div id="screenContainer"></div>
+        </main>
+
+        <!-- Modals & Overlays -->
+        <div id="overlayContainer"></div>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+</body>
+</html>

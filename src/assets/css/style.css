@@ -1,0 +1,941 @@
+/* ========================================
+   Flow State - Zen Design System
+   Minimalist, Purpose-Driven Aesthetics
+======================================== */
+
+:root {
+    /* Color Palette - Premium Zen Theme */
+    --bg-main: #0a0c10;       /* Deeper Slate */
+    --bg-surface: rgba(26, 29, 35, 0.6);    /* Translucent Surface */
+    --border-color: rgba(255, 255, 255, 0.08);  
+    
+    --primary: #a3b8ae;       /* Softer Sage Green */
+    --primary-glow: rgba(163, 184, 174, 0.3);
+    --accent: #e5e7eb;        /* Brighter Silver */
+    
+    --text-primary: #ffffff;
+    --text-secondary: #9ca3af;
+    --text-muted: #6b7280;
+    
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    
+    /* Typography */
+    --font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+    
+    /* Spacing */
+    --radius: 12px;
+    --radius-lg: 24px;
+    --transition: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ========================================
+   Reset & Base
+======================================== */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    min-height: 100vh;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+#app {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* static noise texture for subtle depth without distraction */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: 
+        radial-gradient(circle at 15% 15%, rgba(163, 184, 174, 0.1), transparent 50%),
+        radial-gradient(circle at 85% 85%, rgba(163, 184, 174, 0.07), transparent 50%),
+        url('https://grainy-gradients.vercel.app/noise.svg');
+    opacity: 0.02; /* Çok daha hafif, premium bir doku için */
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Glassmorphism utility */
+.glass {
+    background: var(--bg-surface);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border-color);
+}
+
+/* ========================================
+   Layout
+======================================== */
+.app-container {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    position: relative;
+    z-index: 1;
+}
+
+.main-content {
+    width: 100%;
+    max-width: 680px;
+    display: flex;
+    flex-direction: column;
+    transition: max-width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+.app-container.wide .main-content {
+    max-width: 1100px;
+}
+
+#screenContainer {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.bg-visuals {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.blob {
+    position: absolute;
+    width: 40vw;
+    height: 40vw;
+    background: var(--primary);
+    filter: blur(100px);
+    opacity: 0.05;
+    border-radius: 50%;
+    animation: float 20s infinite alternate;
+}
+
+.blob-1 { top: -10%; left: -10%; animation-delay: 0s; }
+.blob-2 { bottom: -10%; right: -10%; animation-delay: -5s; }
+
+@keyframes float {
+    from { transform: translate(0, 0) scale(1); }
+    to { transform: translate(10%, 10%) scale(1.1); }
+}
+
+@keyframes breath {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.02); opacity: 0.8; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.focus-time.breathing {
+    animation: breath 8s ease-in-out infinite;
+}
+
+/* ========================================
+   Header
+======================================== */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 60px; /* Sabit header yüksekliği */
+    margin-bottom: 2rem;
+    flex-shrink: 0;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 500;
+    letter-spacing: -0.025em;
+}
+
+.logo-icon {
+    color: var(--primary);
+}
+
+.logo-text {
+    font-size: 1.1rem;
+    color: var(--text-primary);
+}
+
+.header-controls {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.icon-btn, .lang-toggle {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    padding: 0.6rem 0.8rem;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* Simge ve yazı arası boşluk */
+    backdrop-filter: blur(8px);
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.icon-btn:hover, .lang-toggle:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--text-muted);
+    color: var(--text-primary);
+}
+
+.header-stats {
+    display: none; /* Hidden on main screens to reduce info clutter, shown on home only if needed */
+}
+
+/* ========================================
+   Welcome Screen (Minimalist)
+======================================== */
+.welcome-content {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.welcome-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+.gradient-text {
+    color: var(--primary); /* Minimal color use */
+}
+
+.welcome-subtitle {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    max-width: 400px;
+    margin: 0 auto 3rem;
+}
+
+.goal-input-container {
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto 2.5rem;
+}
+
+.input-wrapper {
+    margin-bottom: 1rem;
+}
+
+.goal-input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    font-size: 1.25rem;
+    color: var(--text-primary);
+    outline: none;
+    transition: var(--transition);
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+}
+
+.goal-input:focus {
+    border-color: var(--primary);
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 0 0 4px var(--primary-glow);
+}
+
+.btn-primary {
+    width: 100%;
+    background: rgba(163, 184, 174, 0.1);
+    color: var(--primary);
+    border: 1px solid var(--primary);
+    padding: 1.25rem;
+    border-radius: var(--radius);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    backdrop-filter: blur(10px);
+}
+
+.btn-primary:hover:not(:disabled) {
+    background: var(--primary);
+    color: var(--bg-main);
+    transform: translateY(-2px);
+    box-shadow: 0 0 30px var(--primary-glow);
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    padding: 1rem 1.5rem;
+    border-radius: var(--radius);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--text-muted);
+    color: var(--text-primary);
+    transform: translateY(-1px);
+}
+
+.btn-primary:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+/* Quick Goals - Discreet chips */
+.quick-goals {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.quick-label {
+    display: none;
+}
+
+.quick-goal {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    padding: 0.4rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.quick-goal:hover {
+    border-color: var(--text-muted);
+    color: var(--text-primary);
+}
+
+/* ========================================
+   Screens Management
+======================================== */
+.screen {
+    display: none;
+    animation: simpleFade 400ms ease;
+}
+
+.screen.active {
+    display: block;
+}
+
+@keyframes simpleFade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* ========================================
+   Focus Mode (Pure Zen)
+======================================== */
+.focus-screen {
+    text-align: center;
+    padding-top: 4rem;
+}
+
+.focus-label {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
+}
+
+.focus-text {
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    max-width: 500px;
+    margin: 0 auto 4rem;
+}
+
+.focus-time {
+    font-size: 8rem;
+    font-weight: 700;
+    letter-spacing: -0.05em;
+    font-variant-numeric: tabular-nums;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+    font-family: 'Outfit', sans-serif;
+    text-shadow: 0 0 40px rgba(255, 255, 255, 0.1);
+}
+
+.focus-status {
+    color: var(--primary);
+    font-size: 0.9rem;
+}
+
+.focus-controls {
+    margin-top: 4rem;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.btn-icon-only {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-icon-only:hover {
+    color: var(--text-primary);
+    border-color: var(--text-muted);
+}
+
+.btn-danger:hover {
+    border-color: var(--danger);
+    color: var(--danger);
+}
+
+/* ========================================
+   Ritual Screen (Enhanced Layout)
+   ======================================== */
+.ritual-layout {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 3rem;
+    align-items: center;
+    min-height: 500px;
+}
+
+.ritual-main {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.ritual-header {
+    min-height: 100px; /* Metin değişimlerinde zıplamayı azaltmak için taban yükseklik */
+    margin-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.ritual-step {
+    font-size: 0.8rem;
+    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.ritual-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.ritual-desc {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+.ritual-card {
+    background: var(--bg-surface);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border-color);
+    padding: 3.5rem 2.5rem; /* Sabit üst boşluk (anchor) */
+    border-radius: var(--radius-lg);
+    margin-bottom: 2rem;
+    text-align: center;
+    transition: none;
+    height: 380px; 
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; 
+    align-items: center;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.ritual-card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(circle at 50% 50%, var(--primary-glow), transparent 70%);
+    opacity: 0.2;
+    pointer-events: none;
+}
+
+.ritual-icon {
+    color: var(--primary);
+    margin: 0 0 1.5rem; /* Üst margin kaldırıldı çünkü padding-top (flex-start) kullanıyoruz */
+    height: 48px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    filter: drop-shadow(0 0 10px var(--primary-glow));
+}
+
+.ritual-text {
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    line-height: 1.4;
+    z-index: 1;
+    height: 120px; /* Sabit yükseklik fırtınalarda gemiyi sabit tutar */
+    overflow-y: auto; /* Çok uzun olursa içeri kalsın */
+    display: flex;
+    align-items: flex-start; /* Metin her zaman aynı satırdan başlasın */
+    justify-content: center;
+    width: 100%;
+}
+
+.ritual-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+/* Sidebar Styles */
+.ritual-sidebar {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    max-height: 600px;
+    display: flex;
+    flex-direction: column;
+    backdrop-filter: blur(8px);
+    overflow: hidden;
+}
+
+.sidebar-header {
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.sidebar-header h4 {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+}
+
+.ritual-options {
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding-right: 0.5rem;
+}
+
+/* Custom Scrollbar for Sidebar */
+.ritual-options::-webkit-scrollbar {
+    width: 4px;
+}
+
+.ritual-options::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.ritual-options::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 10px;
+}
+
+.ritual-option {
+    padding: 0.85rem 1rem;
+    border-radius: var(--radius);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: var(--text-secondary);
+    transition: var(--transition);
+    border: 1px solid transparent;
+    font-size: 0.9rem;
+}
+
+.ritual-option:hover {
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+.ritual-option.selected {
+    color: var(--primary);
+    background: rgba(163, 184, 174, 0.1);
+    border-color: rgba(163, 184, 174, 0.2);
+}
+
+@media (max-width: 900px) {
+    .ritual-layout {
+        grid-template-columns: 1fr;
+        min-height: auto;
+        gap: 2rem;
+        overflow-y: auto; /* Mobilde dikey kaydırmaya izin ver */
+        max-height: 100%;
+        padding-bottom: 2rem;
+    }
+    .ritual-main {
+        height: auto;
+    }
+    .ritual-sidebar {
+        height: auto;
+        max-height: 400px;
+        flex-shrink: 0;
+    }
+    .ritual-card {
+        height: auto;
+        min-height: 320px;
+    }
+}
+
+/* ========================================
+   90 Seconds Screen
+   ======================================== */
+.ninety-screen {
+    text-align: center;
+}
+
+.ninety-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3rem;
+}
+
+.ninety-header {
+    margin-bottom: 1rem;
+}
+
+.ninety-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.ninety-desc {
+    color: var(--text-secondary);
+    max-width: 450px;
+    margin: 0 auto;
+}
+
+.ninety-timer-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+}
+
+.ninety-progress {
+    position: relative;
+    width: 240px;
+    height: 240px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.progress-ring {
+    transform: rotate(-90deg);
+    width: 100%;
+    height: 100%;
+}
+
+.progress-ring circle {
+    fill: transparent;
+    stroke-width: 6;
+    stroke-linecap: round;
+}
+
+.progress-ring-bg {
+    stroke: var(--border-color);
+}
+
+.progress-ring-fill {
+    stroke: var(--primary);
+    stroke-dasharray: 565.48; /* 2 * PI * 90 */
+    stroke-dashoffset: 565.48;
+    transition: stroke-dashoffset 1s linear;
+}
+
+.ninety-time {
+    position: absolute;
+    font-size: 4.5rem;
+    font-weight: 700;
+    font-family: 'Outfit', sans-serif;
+    color: var(--text-primary);
+}
+
+.ninety-motivation {
+    font-size: 1.1rem;
+    color: var(--primary);
+    font-weight: 500;
+}
+
+.btn-glow {
+    background: var(--primary-glow);
+    color: var(--primary);
+    border: 1px solid var(--primary);
+    padding: 1.25rem 2.5rem;
+    border-radius: var(--radius);
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: 0 0 20px var(--primary-glow);
+}
+
+.btn-glow:hover:not(:disabled) {
+    background: var(--primary);
+    color: var(--bg-main);
+    transform: translateY(-2px);
+    box-shadow: 0 0 40px var(--primary-glow);
+}
+
+.btn-glow:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* ========================================
+   Complete Screen (Premium Celebration)
+   ======================================== */
+.complete-screen {
+    text-align: center;
+}
+
+.complete-container {
+    max-width: 500px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+    animation: slideUpFade 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes slideUpFade {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.complete-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.celebration-badge {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(163, 184, 174, 0.1);
+    border: 1px solid var(--primary-glow);
+    border-radius: 50%;
+    margin-bottom: 0.5rem;
+}
+
+.badge-glow {
+    position: absolute;
+    inset: -20px;
+    background: var(--primary-glow);
+    filter: blur(40px);
+    opacity: 0.3;
+    z-index: -1;
+    border-radius: 50%;
+    animation: pulse 4s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 0.2; }
+    50% { transform: scale(1.2); opacity: 0.4; }
+    100% { transform: scale(1); opacity: 0.2; }
+}
+
+.complete-icon {
+    color: var(--primary);
+    filter: drop-shadow(0 0 15px var(--primary-glow));
+}
+
+.complete-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.complete-subtitle {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    max-width: 320px;
+}
+
+.complete-card {
+    padding: 2.5rem;
+    border-radius: var(--radius-lg);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.stats-grid {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap: 1rem;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+}
+
+.stat-icon-wrapper {
+    color: var(--text-muted);
+}
+
+.stat-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.stat-value small {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-weight: 400;
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+}
+
+.stat-divider {
+    width: 1px;
+    height: 40px;
+    background: var(--border-color);
+}
+
+.complete-actions {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 1rem;
+    width: 100%;
+}
+
+.btn-shortcut {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.5rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    margin-left: auto;
+    opacity: 0.6;
+}
+
+/* ========================================
+   Overlays & Modals
+======================================== */
+.energy-check, .break-overlay {
+    background: var(--bg-main);
+    z-index: 1000;
+}
+
+.energy-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 2.5rem;
+    width: 100%;
+    max-width: 400px;
+}
+
+.energy-btn {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    font-family: inherit;
+}
+
+/* ========================================
+   Fullscreen & Responsive
+======================================== */
+.focus-mode .header {
+    opacity: 0.1; /* Very faint header in focus mode */
+}
+
+.focus-mode .header:hover {
+    opacity: 1;
+}
+
+@media (max-width: 480px) {
+    .welcome-title { font-size: 2rem; }
+    .focus-time { font-size: 4rem; }
+}
+
+.hidden { display: none !important; }
