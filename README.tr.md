@@ -5,7 +5,8 @@
 [![JavaScript](https://img.shields.io/badge/Dil-JavaScript_ESM-F7DF1E.svg)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 [![Dağıtım](https://github.com/fastfingertips/follow-state/actions/workflows/deploy.yml/badge.svg)](https://github.com/fastfingertips/follow-state/actions/workflows/deploy.yml)
 
-[English](README.md) | [Türkçe](README.tr.md)
+[English](README.md) | **Türkçe**
+
 
 90 Saniye Kuralı ve başlangıç ritüelleri ile derin çalışmaya (deep work) ulaşmanıza yardımcı olan minimalist bir odaklanma asistanı. Zen estetiği ve dikkati dağıtmayan etkileşimlere odaklanılarak geliştirildi.
 

@@ -5,7 +5,8 @@
 [![JavaScript](https://img.shields.io/badge/Language-JavaScript_ESM-F7DF1E.svg)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 [![Deploy](https://github.com/fastfingertips/follow-state/actions/workflows/deploy.yml/badge.svg)](https://github.com/fastfingertips/follow-state/actions/workflows/deploy.yml)
 
-[English](README.md) | [Türkçe](README.tr.md)
+**English** | [Türkçe](README.tr.md)
+
 
 A minimalist focus assistant designed to help achieve deep work through the 90-Second Rule and starting rituals. Built with a focus on zen aesthetics and distraction-free interaction.
 
