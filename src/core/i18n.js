@@ -13,7 +13,9 @@ const translations = {
         
         // Header
         sessions: 'Sessions',
+        sessions: 'Sessions',
         minutes: 'Minutes',
+        amoledMode: 'AMOLED Mode',
         
         // Welcome Screen
         welcomeTitle1: 'Ready for',
@@ -114,7 +116,9 @@ const translations = {
         
         // Header
         sessions: 'Oturum',
+        sessions: 'Oturum',
         minutes: 'Dakika',
+        amoledMode: 'AMOLED Mod',
         
         // Welcome Screen
         welcomeTitle1: 'Akışa',

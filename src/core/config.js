@@ -17,7 +17,8 @@ export const CONFIG = {
     STORAGE: {
         STATS: 'flow-state-stats',
         LANG: 'flow-state-lang',
-        SETTINGS: 'flow-state-settings'
+        SETTINGS: 'flow-state-settings',
+        AMOLED_MODE: 'flow-state-amoled'
     },
     
     // Localization

@@ -162,6 +162,14 @@ export class FlowApp {
         // Static events (these elements are in index.html and NOT re-created)
         if (isInitial) {
             this.langToggle.addEventListener('click', () => this.toggleLanguage());
+
+            this.themeToggle = document.getElementById('themeToggle');
+            if (this.themeToggle) {
+                this.themeToggle.addEventListener('click', () => this.toggleTheme());
+                // Load saved theme
+                const isAmoled = localStorage.getItem(CONFIG.STORAGE.AMOLED_MODE) === 'true';
+                if (isAmoled) document.body.classList.add('amoled-mode');
+            }
             
             // Global shortcuts
             globalThis.addEventListener('keydown', (e) => {
@@ -222,6 +230,10 @@ export class FlowApp {
         document.getElementById('energyMidIcon').innerHTML = getIcon('meh', 20);
         document.getElementById('energyLowIcon').innerHTML = getIcon('moon', 20);
         document.getElementById('completeIcon').innerHTML = getIcon('trophy', 64);
+        
+        // Header Icons
+        document.getElementById('themeIcon').innerHTML = getIcon('sun', 16);
+        
         document.getElementById('durationIcon').innerHTML = getIcon('timer', 28);
         document.getElementById('goalIcon').innerHTML = getIcon('target', 28);
         document.getElementById('takeBreakIcon').innerHTML = getIcon('coffee', 18);
@@ -613,7 +625,14 @@ ${i18n.t('logFooterLink')}`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
+        a.click();
+        document.body.removeChild(a);
         URL.revokeObjectURL(url);
+    }
+
+    toggleTheme() {
+        const isAmoled = document.body.classList.toggle('amoled-mode');
+        localStorage.setItem(CONFIG.STORAGE.AMOLED_MODE, isAmoled);
     }
     
     addSVGGradient() {
