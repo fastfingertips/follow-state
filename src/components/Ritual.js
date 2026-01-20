@@ -19,10 +19,12 @@ export const Ritual = () => `
                     <button class="btn btn-secondary" id="newRitualBtn">
                         <span class="btn-icon" id="newRitualIcon"></span>
                         <span class="btn-text" id="newRitualText">${i18n.t('anotherRitual')}</span>
+                        <span class="btn-shortcut">Space</span>
                     </button>
                     <button class="btn btn-primary" id="ritualDoneBtn">
                         <span class="btn-icon" id="ritualDoneIcon"></span>
                         <span class="btn-text" id="ritualDoneText">${i18n.t('done')}</span>
+                        <span class="btn-shortcut">Enter</span>
                     </button>
                 </div>
             </div>

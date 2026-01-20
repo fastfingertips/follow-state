@@ -17,6 +17,7 @@ export const Welcome = () => `
                 <button class="btn btn-primary" id="startBtn" disabled>
                     <span class="btn-text" id="startBtnText">${i18n.t('startButton')}</span>
                     <span class="btn-icon" id="startBtnIcon"></span>
+                    <span class="btn-shortcut">Enter</span>
                 </button>
             </div>
 

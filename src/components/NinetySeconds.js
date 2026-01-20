@@ -24,6 +24,7 @@ export const NinetySeconds = () => `
                 <button class="btn btn-glow" id="start90Btn">
                     <span class="btn-text" id="start90Text">${i18n.t('start90')}</span>
                     <span class="btn-icon" id="start90Icon"></span>
+                    <span class="btn-shortcut">Enter</span>
                 </button>
             </div>
         </div>

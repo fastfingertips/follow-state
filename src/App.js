@@ -157,8 +157,18 @@ export class FlowApp {
             
             // Global shortcuts
             globalThis.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' && this.currentScreen === 'complete') {
-                    this.resetToWelcome();
+                if (e.key === 'Enter') {
+                    if (this.currentScreen === 'complete') {
+                        this.resetToWelcome();
+                    } else if (this.currentScreen === 'ritual') {
+                        this.completeRitual();
+                    } else if (this.currentScreen === 'ninety' && !this.start90Btn.disabled) {
+                        this.start90Seconds();
+                    }
+                }
+                if (e.key === ' ' && this.currentScreen === 'ritual') {
+                    e.preventDefault();
+                    this.selectRandomRitual();
                 }
                 if (e.key === 'Escape') {
                     if (!this.energyCheck.classList.contains('hidden')) {
