@@ -193,8 +193,12 @@ export class FlowApp {
                     }
                 }
                 if (e.key === ' ' && this.currentScreen === 'ritual') {
-                    e.preventDefault();
-                    this.selectRandomRitual();
+                    // Don't trigger if typing in input
+                    const isInputActive = !this.ritualInputWrapper.classList.contains('hidden');
+                    if (!isInputActive) {
+                        e.preventDefault();
+                        this.selectRandomRitual();
+                    }
                 }
                 if (e.key === 'Escape') {
                     if (!this.energyCheck.classList.contains('hidden')) {
