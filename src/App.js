@@ -106,6 +106,7 @@ export class FlowApp {
         this.breakOverlay = document.getElementById('breakOverlay');
         this.breakTip = document.getElementById('breakTip');
         this.breakTimerDisplay = document.getElementById('breakTimer');
+        this.breakProgressRing = document.getElementById('breakProgressRing');
         this.endBreakBtn = document.getElementById('endBreakBtn');
         this.totalSessions = document.getElementById('totalSessions');
         this.totalMinutes = document.getElementById('totalMinutes');
@@ -153,8 +154,12 @@ export class FlowApp {
                 if (e.key === 'Enter' && this.currentScreen === 'complete') {
                     this.resetToWelcome();
                 }
-                if (e.key === 'Escape' && !this.energyCheck.classList.contains('hidden')) {
-                    this.handleEnergyCheck('good');
+                if (e.key === 'Escape') {
+                    if (!this.energyCheck.classList.contains('hidden')) {
+                        this.handleEnergyCheck('good');
+                    } else if (!this.breakOverlay.classList.contains('hidden')) {
+                        this.endBreak();
+                    }
                 }
             });
         }
@@ -452,11 +457,19 @@ export class FlowApp {
     }
     
     updateBreakTimer(seconds) {
+        const total = CONFIG.TIMERS.DEFAULT_BREAK_DURATION;
         const mins = Math.floor(seconds / 60);
         const secs = seconds % 60;
         const timeStr = `${mins}:${String(secs).padStart(2, '0')}`;
         this.breakTimerDisplay.textContent = timeStr;
         document.title = `☕ ${timeStr} - ${CONFIG.APP_NAME}`;
+        
+        // Update break progress ring
+        if (this.breakProgressRing) {
+            const circumference = 283; // 2 * PI * 45
+            const offset = circumference * (1 - seconds / total);
+            this.breakProgressRing.style.strokeDashoffset = offset;
+        }
     }
     
     endBreak() {

@@ -899,6 +899,140 @@ body::before {
 }
 
 /* ========================================
+   Break Screen (Premium Design)
+======================================== */
+.break-overlay {
+    position: fixed;
+    inset: 0;
+    backdrop-filter: blur(20px);
+    background: rgba(10, 12, 16, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.break-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 3rem;
+    width: 90%;
+    max-width: 440px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+    animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.break-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 4px;
+    background: linear-gradient(90deg, var(--primary-glow), var(--accent));
+}
+
+.break-header {
+    width: 100%;
+}
+
+.break-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 1rem;
+    background: rgba(163, 184, 174, 0.1);
+    border: 1px solid rgba(163, 184, 174, 0.2);
+    border-radius: 100px;
+    color: var(--primary);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.break-timer-wrapper {
+    position: relative;
+    width: 220px;
+    height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 1rem 0;
+}
+
+.break-progress-svg {
+    position: absolute;
+    inset: 0;
+    transform: rotate(-90deg);
+}
+
+.break-progress-bg {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.05);
+    stroke-width: 6;
+}
+
+.break-progress-fill {
+    fill: none;
+    stroke: var(--primary);
+    stroke-width: 6;
+    stroke-linecap: round;
+    stroke-dasharray: 283; /* 2 * PI * 45 */
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 1s linear;
+    filter: drop-shadow(0 0 8px var(--primary-glow));
+}
+
+.break-timer {
+    font-size: 4rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-primary);
+    letter-spacing: -2px;
+}
+
+.break-info {
+    text-align: center;
+}
+
+.break-tip {
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    font-style: italic;
+    font-family: 'Outfit', sans-serif;
+}
+
+.break-actions {
+    width: 100%;
+}
+
+.btn-premium-secondary {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-premium-secondary:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--text-muted);
+    color: var(--text-primary);
+    transform: translateY(-2px);
+}
+
+/* ========================================
    Overlays & Modals
 ======================================== */
 .energy-check, .break-overlay {
