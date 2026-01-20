@@ -108,6 +108,7 @@ export class FlowApp {
         this.focusStatus = document.getElementById('focusStatus');
         this.pauseBtn = document.getElementById('pauseBtn');
         this.focusBreakBtn = document.getElementById('focusBreakBtn');
+        this.focusBreakStats = document.getElementById('focusBreakStats');
         this.endSessionBtn = document.getElementById('endSessionBtn');
         this.energyCheck = document.getElementById('energyCheck');
         this.sessionDuration = document.getElementById('sessionDuration');
@@ -228,6 +229,12 @@ export class FlowApp {
         if (customRitualText) customRitualText.textContent = i18n.t('customRitual');
         
         if (this.ritualInput) this.ritualInput.placeholder = i18n.t('customRitualPlaceholder');
+
+        if (this.focusBreakStats && !this.focusBreakStats.classList.contains('hidden')) {
+            const totalMins = Math.floor(this.totalBreakSeconds / 60);
+            const timeDisplay = totalMins > 0 ? `${totalMins}m` : `${this.totalBreakSeconds}s`;
+            this.focusBreakStats.textContent = i18n.t('breakTime', { time: timeDisplay });
+        }
         
         // Render ritual options
         this.renderRitualOptions();
@@ -498,6 +505,7 @@ export class FlowApp {
         
         // Reset session tracking
         this.totalBreakSeconds = 0;
+        if (this.focusBreakStats) this.focusBreakStats.classList.add('hidden');
         this.sessionLogs = [];
         this.addLog('Session Started', `Goal: ${this.currentGoal}`);
         
@@ -533,11 +541,17 @@ export class FlowApp {
     togglePause() {
         this.isPaused = !this.isPaused;
         if (this.isPaused) {
+            this.pauseStartTime = Date.now();
             this.pauseBtn.innerHTML = getIcon('play', 24);
             this.focusStatus.textContent = i18n.t('paused');
             this.focusStatus.style.color = 'var(--warning)';
             if (this.focusTimerDisplay) this.focusTimerDisplay.classList.remove('breathing');
         } else {
+            if (this.pauseStartTime) {
+                const pausedDuration = Date.now() - this.pauseStartTime;
+                this.focusStartTime += pausedDuration;
+                this.pauseStartTime = null;
+            }
             this.pauseBtn.innerHTML = getIcon('pause', 24);
             this.focusStatus.textContent = i18n.t('inFlow');
             this.focusStatus.style.color = '';
@@ -553,6 +567,7 @@ export class FlowApp {
     
     showEnergyCheck() {
         this.isPaused = true;
+        this.pauseStartTime = Date.now();
         this.energyCheck.classList.remove('hidden');
     }
     
@@ -565,13 +580,21 @@ export class FlowApp {
             this.startBreak();
         } else {
             this.isPaused = false;
+            // Adjust start time for the pause duration during energy check
+            if (this.pauseStartTime) {
+                const pausedDuration = Date.now() - this.pauseStartTime;
+                this.focusStartTime += pausedDuration;
+                this.pauseStartTime = null;
+            }
             this.focusStatus.textContent = level === 'good' ? i18n.t('energyHigh') : i18n.t('continuing2');
             setTimeout(() => { if (!this.isPaused) this.focusStatus.textContent = i18n.t('inFlow'); }, 3000);
         }
     }
     
     handleImmediateBreak() {
-        this.endSession(true); // End session first
+        // Just start break, don't end session
+        this.isPaused = true;
+        this.pauseStartTime = Date.now();
         this.startBreak();
     }
     
@@ -639,10 +662,31 @@ export class FlowApp {
             const breakSecs = breakDuration % 60;
             this.addLog('Break Ended', `Duration: ${breakMins}m ${breakSecs}s`);
             this.breakStartTime = null;
+
+            // Update break stats display
+            if (this.focusBreakStats) {
+                const totalMins = Math.floor(this.totalBreakSeconds / 60);
+                const timeDisplay = totalMins > 0 ? `${totalMins}m` : `${this.totalBreakSeconds}s`;
+                this.focusBreakStats.textContent = i18n.t('breakTime', { time: timeDisplay });
+                this.focusBreakStats.classList.remove('hidden');
+            }
         }
 
         this.breakOverlay.classList.add('hidden');
-        this.showScreen('complete');
+        
+        // Resume session
+        this.isPaused = false;
+        
+        // Adjust start time for the break duration
+        if (this.pauseStartTime) {
+            const pausedDuration = Date.now() - this.pauseStartTime;
+            this.focusStartTime += pausedDuration;
+            this.pauseStartTime = null;
+        }
+
+        this.lastEnergyCheck = Date.now(); // Reset energy check timer
+        this.updateFocusTimer(); // Refresh title and status
+        document.title = `${this.focusMinutes.textContent}:${this.focusSeconds.textContent} - ${CONFIG.APP_NAME}`;
     }
     
     resetToWelcome() {

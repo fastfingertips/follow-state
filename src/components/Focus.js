@@ -15,6 +15,7 @@ export const Focus = () => `
                     <span class="time-value" id="focusSeconds">00</span>
                 </div>
                 <p class="focus-status" id="focusStatus">${i18n.t('inFlow')}</p>
+                <p class="focus-break-stats hidden" id="focusBreakStats"></p>
             </div>
 
             <div class="focus-controls">

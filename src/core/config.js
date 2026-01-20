@@ -8,7 +8,7 @@ export const CONFIG = {
     
     // Timer Settings (in seconds)
     TIMERS: {
-        NINETY_SECONDS_RULE: 90,
+        NINETY_SECONDS_RULE: 3,
         DEFAULT_BREAK_DURATION: 5 * 60, // 5 minutes
         ENERGY_CHECK_INTERVAL: 45 * 60 * 1000, // 45 minutes in ms
     },
