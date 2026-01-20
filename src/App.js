@@ -30,6 +30,8 @@ export class FlowApp {
     lastEnergyCheck = null;
     stats = loadStats();
     currentScreen = 'welcome';
+    sessionLogs = [];
+    totalBreakSeconds = 0;
 
     constructor() {
         this.init();
@@ -107,8 +109,11 @@ export class FlowApp {
         this.energyCheck = document.getElementById('energyCheck');
         this.sessionDuration = document.getElementById('sessionDuration');
         this.sessionGoal = document.getElementById('sessionGoal');
+        this.sessionGoal = document.getElementById('sessionGoal');
         this.takeBreakBtn = document.getElementById('takeBreakBtn');
         this.newSessionBtn = document.getElementById('newSessionBtn');
+        this.copyLogBtn = document.getElementById('copyLogBtn');
+        this.downloadLogBtn = document.getElementById('downloadLogBtn');
         this.breakOverlay = document.getElementById('breakOverlay');
         this.breakTip = document.getElementById('breakTip');
         this.breakTimerDisplay = document.getElementById('breakTimer');
@@ -150,6 +155,9 @@ export class FlowApp {
         this.takeBreakBtn.addEventListener('click', () => this.startBreak());
         this.newSessionBtn.addEventListener('click', () => this.resetToWelcome());
         this.endBreakBtn.addEventListener('click', () => this.endBreak());
+        
+        if (this.copyLogBtn) this.copyLogBtn.addEventListener('click', () => this.copyLog());
+        if (this.downloadLogBtn) this.downloadLogBtn.addEventListener('click', () => this.downloadLog());
 
         // Static events (these elements are in index.html and NOT re-created)
         if (isInitial) {
@@ -188,6 +196,12 @@ export class FlowApp {
         document.getElementById('minutesLabel').textContent = i18n.t('minutes');
         document.getElementById('langText').textContent = i18n.getCurrentLang().toUpperCase();
         
+        const copyLogText = document.getElementById('copyLogText');
+        if (copyLogText) copyLogText.textContent = i18n.t('copyLog');
+        
+        const downloadLogText = document.getElementById('downloadLogText');
+        if (downloadLogText) downloadLogText.textContent = i18n.t('downloadLog');
+        
         // Render ritual options
         this.renderRitualOptions();
     }
@@ -214,6 +228,13 @@ export class FlowApp {
         document.getElementById('newSessionIcon').innerHTML = getIcon('refresh', 18);
         document.getElementById('breakIcon').innerHTML = getIcon('coffee', 64);
         
+        // Log Icons
+        const copyLogIcon = document.getElementById('copyLogIcon');
+        if (copyLogIcon) copyLogIcon.innerHTML = getIcon('copy', 14);
+        
+        const downloadLogIcon = document.getElementById('downloadLogIcon');
+        if (downloadLogIcon) downloadLogIcon.innerHTML = getIcon('download', 14);
+
         // Footer Icons
         document.getElementById('footerVersionIcon').innerHTML = getIcon('hash', 14);
         document.getElementById('footerUserIcon').innerHTML = getIcon('user', 14);
@@ -280,6 +301,7 @@ export class FlowApp {
     }
     
     showScreen(screenName) {
+        this.addLog('Screen Change', `Switched to ${screenName}`);
         this.currentScreen = screenName;
         Object.values(this.screens).forEach(screen => screen.classList.remove('active'));
         this.screens[screenName].classList.add('active');
@@ -325,6 +347,8 @@ export class FlowApp {
         this.ritualOptions.querySelectorAll('.ritual-option').forEach((option, i) => {
             option.classList.toggle('selected', i === index);
         });
+
+        this.addLog('Ritual Selected', ritual.text);
     }
     
     completeRitual() {
@@ -370,6 +394,11 @@ export class FlowApp {
         this.focusStartTime = Date.now();
         this.isPaused = false;
         this.lastEnergyCheck = Date.now();
+        
+        // Reset session tracking
+        this.totalBreakSeconds = 0;
+        this.sessionLogs = [];
+        this.addLog('Session Started', `Goal: ${this.currentGoal}`);
         
         if (this.focusTimerDisplay) this.focusTimerDisplay.classList.add('breathing');
         
@@ -447,14 +476,18 @@ export class FlowApp {
     
     endSession(isImmediateBreak = false) {
         clearInterval(this.focusTimer);
-        const duration = Math.floor((Date.now() - this.focusStartTime) / 1000 / 60);
+        const elapsedSeconds = Math.floor((Date.now() - this.focusStartTime) / 1000);
+        const durationMinutes = Math.floor(elapsedSeconds / 60);
+        const durationSeconds = elapsedSeconds % 60;
         
         this.stats.sessions++;
-        this.stats.totalMinutes += duration;
+        this.stats.totalMinutes += durationMinutes;
         saveStats(this.stats);
         this.updateStatsDisplay();
         
-        this.sessionDuration.textContent = duration;
+        // Store precise duration
+        this.sessionDuration.textContent = durationMinutes;
+        this.sessionDuration.dataset.fullDuration = `${durationMinutes}m ${durationSeconds}s`;
         this.sessionGoal.textContent = this.currentGoal.substring(0, CONFIG.UI.MAX_GOAL_LENGTH_DISPLAY) + (this.currentGoal.length > CONFIG.UI.MAX_GOAL_LENGTH_DISPLAY ? '...' : '');
         
         if (!isImmediateBreak) {
@@ -463,6 +496,8 @@ export class FlowApp {
     }
     
     startBreak() {
+        this.breakStartTime = Date.now();
+        this.addLog('Break Started', 'User initiated break');
         this.breakOverlay.classList.remove('hidden');
         const breakTips = i18n.getBreakTips();
         this.breakTip.textContent = breakTips[Math.floor(Math.random() * breakTips.length)];
@@ -495,6 +530,16 @@ export class FlowApp {
     
     endBreak() {
         clearInterval(this.breakTimer);
+        
+        if (this.breakStartTime) {
+            const breakDuration = Math.floor((Date.now() - this.breakStartTime) / 1000);
+            this.totalBreakSeconds += breakDuration;
+            const breakMins = Math.floor(breakDuration / 60);
+            const breakSecs = breakDuration % 60;
+            this.addLog('Break Ended', `Duration: ${breakMins}m ${breakSecs}s`);
+            this.breakStartTime = null;
+        }
+
         this.breakOverlay.classList.add('hidden');
         this.showScreen('complete');
     }
@@ -510,6 +555,65 @@ export class FlowApp {
     updateStatsDisplay() {
         if (this.totalSessions) this.totalSessions.textContent = this.stats.sessions;
         if (this.totalMinutes) this.totalMinutes.textContent = this.stats.totalMinutes;
+    }
+
+    generateLog() {
+        const now = new Date();
+        const dateStr = now.toLocaleDateString();
+        const timeStr = now.toLocaleTimeString();
+        const duration = this.sessionDuration.dataset.fullDuration || `${this.sessionDuration.textContent}m`;
+        const goal = this.currentGoal;
+
+        const logs = this.sessionLogs.map(log => `[${log.time}] (${log.action}): ${log.details}`).join('\n');
+        
+        const totalBreakMins = Math.floor(this.totalBreakSeconds / 60);
+        const totalBreakSecs = this.totalBreakSeconds % 60;
+        const breakDurationStr = `${totalBreakMins}m ${totalBreakSecs}s`;
+
+        return `${i18n.t('logHeader')}
+----------------------------------------
+${i18n.t('logDate')}:     ${dateStr}
+${i18n.t('logTime')}:     ${timeStr}
+${i18n.t('logGoal')}:     ${goal}
+${i18n.t('logDuration')}: ${duration}
+${i18n.t('logTotalBreak')}: ${breakDurationStr}
+----------------------------------------
+session_logs:
+${logs}
+----------------------------------------
+${i18n.t('logFooter')}
+${i18n.t('logFooterLink')}`;
+    }
+
+    async copyLog() {
+        const logContent = this.generateLog();
+        try {
+            await navigator.clipboard.writeText(logContent);
+            
+            const originalText = document.getElementById('copyLogText').textContent;
+            document.getElementById('copyLogText').textContent = i18n.t('logCopied');
+            
+            setTimeout(() => {
+                document.getElementById('copyLogText').textContent = originalText;
+            }, 2000);
+        } catch (err) {
+            console.error('Failed to copy log:', err);
+        }
+    }
+
+    downloadLog() {
+        const logContent = this.generateLog();
+        const blob = new Blob([logContent], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+        a.href = url;
+        a.download = `flow-state-log-${timestamp}.txt`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
     }
     
     addSVGGradient() {
@@ -528,5 +632,11 @@ export class FlowApp {
         `;
         svg.insertBefore(defs, svg.firstChild);
         this.progressRing.setAttribute('stroke', 'url(#progressGradient)');
+    }
+
+    addLog(action, details = '') {
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString();
+        this.sessionLogs.push({ time: timeStr, action, details });
     }
 }

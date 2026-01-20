@@ -29,6 +29,18 @@ export const Complete = () => `
                         </div>
                     </div>
                 </div>
+                
+                <div class="log-actions">
+                    <button class="btn-text-only" id="copyLogBtn" title="Copy Log">
+                        <span class="btn-icon-sm" id="copyLogIcon"></span>
+                        <span id="copyLogText">${i18n.t('copyLog')}</span>
+                    </button>
+                    <span class="log-divider">•</span>
+                    <button class="btn-text-only" id="downloadLogBtn" title="Download Log">
+                        <span class="btn-icon-sm" id="downloadLogIcon"></span>
+                        <span id="downloadLogText">${i18n.t('downloadLog')}</span>
+                    </button>
+                </div>
             </div>
 
             <div class="complete-actions">

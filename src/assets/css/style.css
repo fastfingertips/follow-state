@@ -1073,6 +1073,49 @@ body::before {
 }
 
 /* ========================================
+   Log Actions (Minimal)
+======================================== */
+.log-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+    margin-top: 1.5rem;
+}
+
+.btn-text-only {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    padding: 0.4rem 0.6rem;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-family);
+}
+
+.btn-text-only:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.btn-icon-sm svg {
+    width: 14px;
+    height: 14px;
+}
+
+.log-divider {
+    color: var(--border-color);
+    font-size: 0.8rem;
+}
+
+/* ========================================
    Overlays & Modals
 ======================================== */
 .energy-check, .break-overlay {
