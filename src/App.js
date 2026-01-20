@@ -94,6 +94,9 @@ export class FlowApp {
         this.ritualText = document.getElementById('ritualText');
         this.ritualOptions = document.getElementById('ritualOptions');
         this.newRitualBtn = document.getElementById('newRitualBtn');
+        this.customRitualBtn = document.getElementById('customRitualBtn');
+        this.ritualInputWrapper = document.getElementById('ritualInputWrapper');
+        this.ritualInput = document.getElementById('ritualInput');
         this.ritualDoneBtn = document.getElementById('ritualDoneBtn');
         this.ninetyTime = document.getElementById('ninetyTime');
         this.progressRing = document.getElementById('progressRing');
@@ -142,6 +145,11 @@ export class FlowApp {
         });
 
         this.newRitualBtn.addEventListener('click', () => this.selectRandomRitual());
+        this.customRitualBtn.addEventListener('click', () => this.toggleCustomRitualMode());
+        this.ritualInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') this.saveCustomRitual();
+            if (e.key === 'Escape') this.toggleCustomRitualMode();
+        });
         this.ritualDoneBtn.addEventListener('click', () => this.completeRitual());
         this.start90Btn.addEventListener('click', () => this.start90Seconds());
         this.pauseBtn.addEventListener('click', () => this.togglePause());
@@ -211,6 +219,11 @@ export class FlowApp {
         
         const downloadLogText = document.getElementById('downloadLogText');
         if (downloadLogText) downloadLogText.textContent = i18n.t('downloadLog');
+
+        const customRitualText = document.getElementById('customRitualText');
+        if (customRitualText) customRitualText.textContent = i18n.t('customRitual');
+        
+        if (this.ritualInput) this.ritualInput.placeholder = i18n.t('customRitualPlaceholder');
         
         // Render ritual options
         this.renderRitualOptions();
@@ -222,6 +235,7 @@ export class FlowApp {
         document.getElementById('langIcon').innerHTML = getIcon('globe', 16);
         document.getElementById('startBtnIcon').innerHTML = getIcon('arrowRight', 20);
         document.getElementById('newRitualIcon').innerHTML = getIcon('refresh', 18);
+        document.getElementById('customRitualIcon').innerHTML = getIcon('penTool', 18);
         document.getElementById('ritualDoneIcon').innerHTML = getIcon('check', 18);
         document.getElementById('start90Icon').innerHTML = getIcon('rocket', 20);
         this.pauseBtn.innerHTML = getIcon('pause', 24);
@@ -368,9 +382,73 @@ export class FlowApp {
         });
 
         this.addLog('Ritual Selected', ritual.text);
+        
+        // Ensure input mode is off when selecting from list
+        if (!this.ritualInputWrapper.classList.contains('hidden')) {
+            this.toggleCustomRitualMode();
+        }
+    }
+    
+    toggleCustomRitualMode() {
+        const isInputVisible = !this.ritualInputWrapper.classList.contains('hidden');
+        
+        if (isInputVisible) {
+            // Hide Input (Cancel)
+            this.ritualInputWrapper.classList.add('hidden');
+            this.ritualText.classList.remove('hidden');
+            this.ritualInput.value = '';
+            
+            // Restore icon (either default or saved custom icon)
+            const iconIndex = typeof this.currentRitualIndex === 'number' ? this.currentRitualIndex : 0;
+            // If custom text is set (meaning we saved a custom ritual previously), keep the edit icon, otherwise restore original
+            const isCustom = this.ritualText.textContent !== i18n.getRituals()[iconIndex]?.text;
+            this.ritualIcon.innerHTML = isCustom ? getIcon('fileEdit', 48) : getRitualIcon(iconIndex);
+            
+            // Reset button state
+            const icon = document.getElementById('customRitualIcon');
+            if (icon) icon.innerHTML = getIcon('penTool', 18);
+            const text = document.getElementById('customRitualText');
+            if (text) text.textContent = i18n.t('customRitual');
+        } else {
+            // Show Input
+            this.ritualInputWrapper.classList.remove('hidden');
+            this.ritualText.classList.add('hidden');
+            this.ritualInput.focus();
+            
+            // Set edit icon
+            this.ritualIcon.innerHTML = getIcon('fileEdit', 48);
+            
+            // Change button to Cancel
+            const icon = document.getElementById('customRitualIcon');
+            if (icon) icon.innerHTML = getIcon('x', 18);
+            const text = document.getElementById('customRitualText');
+            if (text) text.textContent = i18n.t('cancel');
+        }
+    }
+
+    saveCustomRitual() {
+        const text = this.ritualInput.value.trim();
+        if (text) {
+            this.ritualText.textContent = text;
+            this.ritualIcon.innerHTML = getIcon('fileEdit', 48); // Set custom icon
+            this.addLog('Custom Ritual Set', text);
+            this.toggleCustomRitualMode();
+            
+            // Deselect list items
+            this.ritualOptions.querySelectorAll('.ritual-option').forEach(opt => opt.classList.remove('selected'));
+        }
     }
     
     completeRitual() {
+        // If in input mode and has text, save it first
+        if (!this.ritualInputWrapper.classList.contains('hidden')) {
+            if (this.ritualInput.value.trim()) {
+                this.saveCustomRitual();
+            } else {
+                this.toggleCustomRitualMode(); // Cancel empty input
+            }
+        }
+
         this.showScreen('ninety');
         this.resetNinetyTimer();
     }

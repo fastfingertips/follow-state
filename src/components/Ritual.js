@@ -13,13 +13,19 @@ export const Ritual = () => `
                 <div class="ritual-card" id="ritualCard">
                     <div class="ritual-icon" id="ritualIcon"></div>
                     <p class="ritual-text" id="ritualText"></p>
+                    <div class="ritual-input-wrapper hidden" id="ritualInputWrapper">
+                        <input type="text" class="ritual-input" id="ritualInput" maxlength="100" autocomplete="off">
+                    </div>
                 </div>
 
                 <div class="ritual-actions">
                     <button class="btn btn-secondary" id="newRitualBtn">
                         <span class="btn-icon" id="newRitualIcon"></span>
                         <span class="btn-text" id="newRitualText">${i18n.t('anotherRitual')}</span>
-                        <span class="btn-shortcut">Space</span>
+                    </button>
+                    <button class="btn btn-secondary" id="customRitualBtn">
+                        <span class="btn-icon" id="customRitualIcon"></span>
+                        <span class="btn-text" id="customRitualText">${i18n.t('customRitual')}</span>
                     </button>
                     <button class="btn btn-primary" id="ritualDoneBtn">
                         <span class="btn-icon" id="ritualDoneIcon"></span>

@@ -34,6 +34,9 @@ const translations = {
         ritualDesc: 'Complete this ritual before entering the flow',
         anotherRitual: 'Another Ritual',
         done: 'Done!',
+        customRitual: 'Custom',
+        customRitualPlaceholder: 'Type your own ritual...',
+        cancel: 'Cancel',
         allRituals: 'All Rituals',
         
         // Rituals
@@ -136,6 +139,9 @@ const translations = {
         ritualDesc: 'Akışa girmeden önce bu ritüeli tamamla',
         anotherRitual: 'Başka Ritüel',
         done: 'Yaptım!',
+        customRitual: 'Özel',
+        customRitualPlaceholder: 'Kendi ritüelini yaz...',
+        cancel: 'İptal',
         allRituals: 'Tüm Ritüeller',
         
         // Rituals
