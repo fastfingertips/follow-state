@@ -107,7 +107,6 @@ body::before {
 }
 
 #screenContainer {
-    flex: 1;
     display: flex;
     flex-direction: column;
 }
@@ -208,6 +207,47 @@ body::before {
 
 .header-stats {
     display: none; /* Hidden on main screens to reduce info clutter, shown on home only if needed */
+}
+
+/* ========================================
+   Footer (Minimal)
+======================================== */
+.footer {
+    position: absolute;
+    bottom: 2rem;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    align-items: center;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    transition: var(--transition);
+    opacity: 0.5;
+    pointer-events: auto;
+}
+
+.footer a, .footer span {
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    border-radius: 50%;
+}
+
+.footer a:hover, .footer span:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.05);
+    transform: scale(1.1);
+}
+
+.focus-mode .footer {
+    opacity: 0; /* Odaklanma modunda tamamen gizli */
+    pointer-events: none;
 }
 
 /* ========================================

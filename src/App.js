@@ -214,6 +214,11 @@ export class FlowApp {
         document.getElementById('newSessionIcon').innerHTML = getIcon('refresh', 18);
         document.getElementById('breakIcon').innerHTML = getIcon('coffee', 64);
         
+        // Footer Icons
+        document.getElementById('footerVersionIcon').innerHTML = getIcon('hash', 14);
+        document.getElementById('footerUserIcon').innerHTML = getIcon('user', 14);
+        document.getElementById('footerGithubIcon').innerHTML = getIcon('github', 14);
+        
         // Quick goal icons
         document.querySelector('[data-goal="quickCode"] .quick-icon').innerHTML = getIcon('code', 16);
         document.querySelector('[data-goal="quickDesign"] .quick-icon').innerHTML = getIcon('palette', 16);
