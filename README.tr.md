@@ -19,6 +19,9 @@
 - **Zen Estetiği**: Adaçayı yeşili (sage green) paleti ve glassmorphism arayüz.
 - **Enerji Kontrolleri**: Zihinsel tükenmişliği önlemek için periyodik hatırlatıcılar.
 - **Rehberli Molalar**: Etkili toparlanma için entegre mola önerileri.
+- **Oturum Kayıtları**: Kopyalama/indirme özelliğine sahip detaylı loglar.
+- **AMOLED Modu**: OLED ekranlar için tam siyah tema.
+- **Akıllı Kısayollar**: Akıcı kullanım için klavye öncelikli navigasyon.
 - **Yerelleştirme**: İngilizce ve Türkçe desteği.
 
 ## Başlangıç

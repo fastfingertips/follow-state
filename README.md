@@ -19,6 +19,9 @@ A minimalist focus assistant designed to help achieve deep work through the 90-S
 - **Zen Aesthetics**: Glassmorphism UI with a sage green palette.
 - **Energy Checks**: Periodic reminders to prevent cognitive burnout.
 - **Guided Breaks**: Integrated break suggestions for effective recovery.
+- **Session Logging**: Detailed logs with copy & download functionality.
+- **AMOLED Mode**: True black theme for OLED displays.
+- **Smart Shortcuts**: Keyboard-first navigation for seamless flow.
 - **Localization**: Support for English and Turkish.
 
 ## Getting Started
