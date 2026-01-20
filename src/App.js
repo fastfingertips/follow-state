@@ -180,6 +180,8 @@ export class FlowApp {
                         this.completeRitual();
                     } else if (this.currentScreen === 'ninety' && !this.start90Btn.disabled) {
                         this.start90Seconds();
+                    } else if (this.currentScreen === 'welcome' && this.goalInput.value.trim()) {
+                        this.startRitualPhase();
                     }
                 }
                 if (e.key === ' ' && this.currentScreen === 'ritual') {
