@@ -195,34 +195,36 @@ export class FlowApp {
             }
             
             // Global shortcuts
-            globalThis.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') {
-                    if (this.currentScreen === 'complete') {
-                        this.resetToWelcome();
-                    } else if (this.currentScreen === 'ritual') {
-                        this.completeRitual();
-                    } else if (this.currentScreen === 'ninety' && !this.start90Btn.disabled) {
-                        this.start90Seconds();
-                    } else if (this.currentScreen === 'welcome' && this.goalInput.value.trim()) {
-                        this.startRitualPhase();
-                    }
-                }
-                if (e.key === ' ' && this.currentScreen === 'ritual') {
-                    // Don't trigger if typing in input
-                    const isInputActive = !this.ritualInputWrapper.classList.contains('hidden');
-                    if (!isInputActive) {
-                        e.preventDefault();
-                        this.selectRandomRitual();
-                    }
-                }
-                if (e.key === 'Escape') {
-                    if (!this.energyCheck.classList.contains('hidden')) {
-                        this.handleEnergyCheck('good');
-                    } else if (!this.breakOverlay.classList.contains('hidden')) {
-                        this.endBreak();
-                    }
-                }
-            });
+            globalThis.addEventListener('keydown', (e) => this.handleGlobalShortcuts(e));
+        }
+    }
+
+    handleGlobalShortcuts(e) {
+        if (e.key === 'Enter') {
+            if (this.currentScreen === 'complete') {
+                this.resetToWelcome();
+            } else if (this.currentScreen === 'ritual') {
+                this.completeRitual();
+            } else if (this.currentScreen === 'ninety' && !this.start90Btn.disabled) {
+                this.start90Seconds();
+            } else if (this.currentScreen === 'welcome' && this.goalInput.value.trim()) {
+                this.startRitualPhase();
+            }
+        }
+        if (e.key === ' ' && this.currentScreen === 'ritual') {
+            // Don't trigger if typing in input
+            const isInputActive = !this.ritualInputWrapper.classList.contains('hidden');
+            if (!isInputActive) {
+                e.preventDefault();
+                this.selectRandomRitual();
+            }
+        }
+        if (e.key === 'Escape') {
+            if (!this.energyCheck.classList.contains('hidden')) {
+                this.handleEnergyCheck('good');
+            } else if (!this.breakOverlay.classList.contains('hidden')) {
+                this.endBreak();
+            }
         }
     }
     
@@ -603,8 +605,7 @@ export class FlowApp {
         this.lastEnergyCheck = Date.now();
         
         if (level === 'low') {
-            this.endSession();
-            this.startBreak();
+            this.handleImmediateBreak();
         } else {
             this.isPaused = false;
             // Adjust start time for the pause duration during energy check

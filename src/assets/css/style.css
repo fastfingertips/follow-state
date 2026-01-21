@@ -102,8 +102,9 @@ body::before {
     width: 100%;
     min-height: 100vh;
     display: flex;
+    flex-direction: column; /* Ensure vertical stacking */
     align-items: center;
-    justify-content: center;
+    /* justify-content: center; Removed to allow margin:auto to handle centering */
     padding: 2rem 1rem;
     position: relative;
     z-index: 1;
@@ -111,20 +112,24 @@ body::before {
 
 .main-content {
     width: 100%;
-    max-width: 680px;
+    max-width: 960px; /* Wider header space */
     display: flex;
     flex-direction: column;
     transition: max-width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
+    margin: auto 0; /* Center vertically */
 }
 
 .app-container.wide .main-content {
-    max-width: 1100px;
+    max-width: 1200px;
 }
 
 #screenContainer {
     display: flex;
     flex-direction: column;
+    width: 100%;
+    max-width: 680px; /* Keep content focused */
+    margin: 0 auto;
 }
 
 .bg-visuals {
@@ -174,6 +179,8 @@ body::before {
     height: 60px; /* Sabit header yüksekliği */
     margin-bottom: 2rem;
     flex-shrink: 0;
+    position: relative;
+    z-index: 1001;
 }
 
 .logo {
@@ -229,10 +236,11 @@ body::before {
    Footer (Minimal)
 ======================================== */
 .footer {
-    position: absolute;
-    bottom: 2rem;
-    left: 0;
-    right: 0;
+    position: relative; /* Change from absolute to prevent overlap */
+    bottom: auto;
+    left: auto;
+    right: auto;
+    margin-top: auto; /* Push to bottom if content is short */
     display: flex;
     justify-content: center;
     gap: 1.5rem;
@@ -242,6 +250,7 @@ body::before {
     transition: var(--transition);
     opacity: 0.5;
     pointer-events: auto;
+    padding-top: 2rem;
 }
 
 .footer a, .footer span {
@@ -1166,31 +1175,124 @@ body::before {
    Overlays & Modals
 ======================================== */
 .energy-check, .break-overlay {
-    background: var(--bg-main);
+    position: fixed;
+    inset: 0;
+    backdrop-filter: blur(20px);
+    background: rgba(10, 12, 16, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     z-index: 1000;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .energy-card {
     background: var(--bg-surface);
     border: 1px solid var(--border-color);
-    border-radius: var(--radius);
-    padding: 2.5rem;
+    border-radius: var(--radius-lg);
+    padding: 3rem;
+    width: 90%;
+    max-width: 440px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+    animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.energy-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 4px;
+    background: linear-gradient(90deg, var(--primary-glow), var(--accent));
+    opacity: 0.5;
+}
+
+.energy-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    text-align: center;
+}
+
+.energy-icon {
+    color: var(--primary);
+    filter: drop-shadow(0 0 10px var(--primary-glow));
+    margin-bottom: 0.5rem;
+}
+
+.energy-header h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.energy-question {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    line-height: 1.5;
+    margin-bottom: 0.5rem;
+}
+
+.energy-options {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
     width: 100%;
-    max-width: 400px;
 }
 
 .energy-btn {
-    background: transparent;
+    background: rgba(255, 255, 255, 0.03);
     border: 1px solid var(--border-color);
     color: var(--text-secondary);
+    padding: 1rem;
+    border-radius: var(--radius);
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
     font-family: inherit;
+}
+
+.energy-btn:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-primary);
+}
+
+.energy-good:hover {
+    border-color: var(--success);
+    color: var(--success);
+    box-shadow: 0 4px 20px rgba(16, 185, 129, 0.1);
+}
+
+.energy-mid:hover {
+    border-color: var(--warning);
+    color: var(--warning);
+    box-shadow: 0 4px 20px rgba(245, 158, 11, 0.1);
+}
+
+.energy-low:hover {
+    border-color: var(--danger);
+    color: var(--danger);
+    box-shadow: 0 4px 20px rgba(239, 68, 68, 0.1);
 }
 
 /* ========================================
    Fullscreen & Responsive
 ======================================== */
 .focus-mode .header {
-    opacity: 0.1; /* Very faint header in focus mode */
+    opacity: 0.3; /* Slightly visible but unobtrusive */
+    transition: opacity 0.3s ease;
 }
 
 .focus-mode .header:hover {
