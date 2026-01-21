@@ -10,6 +10,7 @@ export const CONFIG = {
     TIMERS: {
         NINETY_SECONDS_RULE: 90,
         DEFAULT_BREAK_DURATION: 5 * 60, // 5 minutes
+        BREAK_EXTENSION: 120, // 2 minutes
         ENERGY_CHECK_INTERVAL: 45 * 60 * 1000, // 45 minutes in ms
     },
     
@@ -26,12 +27,20 @@ export const CONFIG = {
         DEFAULT_LANG: 'en',
         SUPPORTED_LANGS: ['en', 'tr']
     },
-    
+
     // UI Constants
     UI: {
         WIDE_SCREEN_THRESHOLD: 900,
         ANIMATION_DURATION: 300,
-        MAX_GOAL_LENGTH_DISPLAY: 30
+        MAX_GOAL_LENGTH_DISPLAY: 30,
+        SOFT_FOCUS_DELAY: 500,
+        TOAST_DURATION: 2000,
+        ENERGY_FEEDBACK_DURATION: 3000
+    },
+
+    // Logs
+    LOGS: {
+        FILENAME_PREFIX: 'flow-state-log-'
     }
 };
 

@@ -52,7 +52,7 @@ export class FlowApp {
         // Soft focus: Wait for screen fade animation to complete
         setTimeout(() => {
             if (this.goalInput) this.goalInput.focus();
-        }, 500);
+        }, CONFIG.UI.SOFT_FOCUS_DELAY);
 
         initFullscreen('fullscreenToggle');
     }
@@ -615,7 +615,7 @@ export class FlowApp {
                 this.pauseStartTime = null;
             }
             this.focusStatus.textContent = level === 'good' ? i18n.t('energyHigh') : i18n.t('continuing2');
-            setTimeout(() => { if (!this.isPaused) this.focusStatus.textContent = i18n.t('inFlow'); }, 3000);
+            setTimeout(() => { if (!this.isPaused) this.focusStatus.textContent = i18n.t('inFlow'); }, CONFIG.UI.ENERGY_FEEDBACK_DURATION);
         }
     }
     
@@ -666,8 +666,8 @@ export class FlowApp {
     }
     
     extendBreak() {
-        this.breakSeconds += 120;
-        this.breakTotalDuration += 120;
+        this.breakSeconds += CONFIG.TIMERS.BREAK_EXTENSION;
+        this.breakTotalDuration += CONFIG.TIMERS.BREAK_EXTENSION;
         this.updateBreakTimer(this.breakSeconds);
     }
     
@@ -775,7 +775,7 @@ ${i18n.t('logFooterLink')}`;
             
             setTimeout(() => {
                 document.getElementById('copyLogText').textContent = originalText;
-            }, 2000);
+            }, CONFIG.UI.TOAST_DURATION);
         } catch (err) {
             console.error('Failed to copy log:', err);
         }
@@ -789,7 +789,7 @@ ${i18n.t('logFooterLink')}`;
         
         const timestamp = new Date().toISOString().replaceAll(/[:.]/g, '-');
         a.href = url;
-        a.download = `flow-state-log-${timestamp}.txt`;
+        a.download = `${CONFIG.LOGS.FILENAME_PREFIX}${timestamp}.txt`;
         document.body.appendChild(a);
         a.click();
         a.remove();
