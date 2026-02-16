@@ -9,6 +9,7 @@ import { getIcon, getRitualIcon } from './core/icons.js';
 import { loadStats, saveStats } from './core/storage.js';
 import { initFullscreen } from './core/fullscreen.js';
 import { Timer } from './core/timer.js';
+import { LogService } from './core/LogService.js';
 
 // Import Components
 import { Welcome } from './components/Welcome.js';
@@ -32,7 +33,7 @@ export class FlowApp {
     lastEnergyCheck = null;
     stats = loadStats();
     currentScreen = 'welcome';
-    sessionLogs = [];
+    logger = new LogService();
     totalBreakSeconds = 0;
 
     constructor() {
@@ -418,7 +419,7 @@ export class FlowApp {
             }
         });
 
-        this.addLog('Ritual Selected', ritual.text);
+        this.logger.add('Ritual Selected', ritual.text);
         
         // Ensure input mode is off when selecting from list
         if (!this.ritualInputWrapper.classList.contains('hidden')) {
@@ -468,7 +469,7 @@ export class FlowApp {
         if (text) {
             this.ritualText.textContent = text;
             this.ritualIcon.innerHTML = getIcon('fileEdit', 48); // Set custom icon
-            this.addLog('Custom Ritual Set', text);
+            this.logger.add('Custom Ritual Set', text);
             this.toggleCustomRitualMode();
             
             // Deselect list items
@@ -532,8 +533,8 @@ export class FlowApp {
         // Reset session tracking
         this.totalBreakSeconds = 0;
         if (this.focusBreakStats) this.focusBreakStats.classList.add('hidden');
-        this.sessionLogs = [];
-        this.addLog('Session Started', `Goal: ${this.currentGoal}`);
+        this.logger.clear();
+        this.logger.add('Session Started', `Goal: ${this.currentGoal}`);
         
         if (this.focusTimerDisplay) this.focusTimerDisplay.classList.add('breathing');
         
@@ -634,7 +635,7 @@ export class FlowApp {
     
     startBreak() {
         this.breakStartTime = Date.now();
-        this.addLog('Break Started', 'User initiated break');
+        this.logger.add('Break Started', 'User initiated break');
         this.breakOverlay.classList.remove('hidden');
         const breakTips = i18n.getBreakTips();
         this.breakTip.textContent = breakTips[Math.floor(Math.random() * breakTips.length)];
@@ -682,7 +683,7 @@ export class FlowApp {
             this.totalBreakSeconds += breakDuration;
             const breakMins = Math.floor(breakDuration / 60);
             const breakSecs = breakDuration % 60;
-            this.addLog('Break Ended', `Duration: ${breakMins}m ${breakSecs}s`);
+            this.logger.add('Break Ended', `Duration: ${breakMins}m ${breakSecs}s`);
             this.breakStartTime = null;
 
             // Update break stats display
@@ -719,62 +720,28 @@ export class FlowApp {
     }
 
     generateLog() {
-        const now = new Date();
-        const dateStr = now.toLocaleDateString();
-        const timeStr = now.toLocaleTimeString();
-        const duration = this.sessionDuration.dataset.fullDuration || `${this.sessionDuration.textContent}m`;
-        const goal = this.currentGoal;
-
-        const logs = this.sessionLogs.map(log => `[${log.time}] (${log.action}): ${log.details}`).join('\n');
-        
-        const totalBreakMins = Math.floor(this.totalBreakSeconds / 60);
-        const totalBreakSecs = this.totalBreakSeconds % 60;
-        const breakDurationStr = `${totalBreakMins}m ${totalBreakSecs}s`;
-
-        return `${i18n.t('logHeader')}
-----------------------------------------
-${i18n.t('logDate')}:     ${dateStr}
-${i18n.t('logTime')}:     ${timeStr}
-${i18n.t('logGoal')}:     ${goal}
-${i18n.t('logDuration')}: ${duration}
-${i18n.t('logTotalBreak')}: ${breakDurationStr}
-----------------------------------------
-session_logs:
-${logs}
-----------------------------------------
-${i18n.t('logFooter')}
-${i18n.t('logFooterLink')}`;
+        return this.logger.generateContent({
+            goal: this.currentGoal,
+            duration: this.sessionDuration.dataset.fullDuration || `${this.sessionDuration.textContent}m`,
+            totalBreakSeconds: this.totalBreakSeconds
+        });
     }
 
     async copyLog() {
         const logContent = this.generateLog();
-        try {
-            await navigator.clipboard.writeText(logContent);
-            
-            const originalText = document.getElementById('copyLogText').textContent;
-            document.getElementById('copyLogText').textContent = i18n.t('logCopied');
-            
-            setTimeout(() => {
-                document.getElementById('copyLogText').textContent = originalText;
-            }, CONFIG.UI.TOAST_DURATION);
-        } catch (err) {
-            console.error('Failed to copy log:', err);
+        const success = await this.logger.copyToClipboard(logContent);
+        
+        if (success) {
+            const el = document.getElementById('copyLogText');
+            const originalText = el.textContent;
+            el.textContent = i18n.t('logCopied');
+            setTimeout(() => { el.textContent = originalText; }, CONFIG.UI.TOAST_DURATION);
         }
     }
 
     downloadLog() {
         const logContent = this.generateLog();
-        const blob = new Blob([logContent], { type: 'text/plain' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        
-        const timestamp = new Date().toISOString().replaceAll(/[:.]/g, '-');
-        a.href = url;
-        a.download = `${CONFIG.LOGS.FILENAME_PREFIX}${timestamp}.txt`;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        URL.revokeObjectURL(url);
+        this.logger.downloadFile(logContent);
     }
 
     viewLog() {
@@ -814,9 +781,5 @@ ${i18n.t('logFooterLink')}`;
         this.progressRing.setAttribute('stroke', 'url(#progressGradient)');
     }
 
-    addLog(action, details = '') {
-        const now = new Date();
-        const timeStr = now.toLocaleTimeString();
-        this.sessionLogs.push({ time: timeStr, action, details });
-    }
+
 }
