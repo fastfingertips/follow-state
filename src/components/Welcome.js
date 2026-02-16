@@ -2,7 +2,7 @@ import i18n from '../core/i18n.js';
 
 export const Welcome = () => `
     <section class="screen welcome-screen" id="welcomeScreen">
-        <div class="welcome-content">
+        <div class="welcome-content flex-col-center text-center">
             <h1 class="welcome-title">
                 <span class="title-line" id="welcomeTitle1">${i18n.t('welcomeTitle1')}</span>
                 <span class="title-line gradient-text" id="welcomeTitle2">${i18n.t('welcomeTitle2')}</span>
@@ -14,7 +14,7 @@ export const Welcome = () => `
                     <input type="text" id="goalInput" class="goal-input" placeholder="${i18n.t('goalPlaceholder')}" maxlength="100" autocomplete="off">
                     <span class="input-glow"></span>
                 </div>
-                <button class="btn btn-primary" id="startBtn" disabled>
+                <button class="btn btn-primary btn-base w-full" id="startBtn" disabled>
                     <span class="btn-text" id="startBtnText">${i18n.t('startButton')}</span>
                     <span class="btn-icon" id="startBtnIcon"></span>
                     <span class="btn-shortcut">Enter</span>

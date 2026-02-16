@@ -18,10 +18,10 @@ export const Focus = () => `
                 <p class="focus-break-stats hidden" id="focusBreakStats"></p>
             </div>
 
-            <div class="focus-controls">
-                <button class="btn btn-icon-only" id="pauseBtn" title="Pause"></button>
-                <button class="btn btn-icon-only" id="focusBreakBtn" title="Take a Break"></button>
-                <button class="btn btn-icon-only btn-danger" id="endSessionBtn" title="End"></button>
+            <div class="focus-controls flex-center">
+                <button class="btn btn-icon-only btn-base btn-icon-base" id="pauseBtn" title="Pause"></button>
+                <button class="btn btn-icon-only btn-base btn-icon-base" id="focusBreakBtn" title="Take a Break"></button>
+                <button class="btn btn-icon-only btn-danger btn-base btn-icon-base" id="endSessionBtn" title="End"></button>
             </div>
         </div>
     </section>

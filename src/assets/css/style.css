@@ -96,6 +96,80 @@ body::before {
 }
 
 /* ========================================
+   Utilities
+======================================== */
+.flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flex-col {
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-col-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.text-center { text-align: center; }
+.hidden { display: none !important; }
+
+.btn-base {
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: inherit;
+    border: 1px solid transparent;
+    outline: none;
+    gap: 0.75rem;
+    border-radius: var(--radius);
+}
+
+.btn-icon-base {
+    width: 48px;
+    height: 48px;
+    border-radius: 50% !important;
+    padding: 0 !important;
+}
+
+.w-full { width: 100%; }
+
+
+.overlay-fixed {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+}
+
+.card-zen {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+}
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    backdrop-filter: blur(20px);
+    background: rgba(10, 12, 16, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 2000;
+}
+
+
+
+/* ========================================
    Layout
 ======================================== */
 .app-container {
@@ -184,11 +258,9 @@ body::before {
 }
 
 .logo {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
     font-weight: 500;
     letter-spacing: -0.025em;
+    gap: 0.75rem;
 }
 
 .logo-icon {
@@ -213,9 +285,6 @@ body::before {
     border-radius: var(--radius);
     cursor: pointer;
     transition: var(--transition);
-    display: flex;
-    align-items: center;
-    justify-content: center;
     gap: 8px; /* Simge ve yazı arası boşluk */
     backdrop-filter: blur(8px);
     font-size: 0.85rem;
@@ -278,13 +347,7 @@ body::before {
 /* ========================================
    Welcome Screen (Minimalist)
 ======================================== */
-.welcome-content {
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
+
 
 .welcome-title {
     font-size: 2.5rem;
@@ -336,7 +399,6 @@ body::before {
 }
 
 .btn-primary {
-    width: 100%;
     background: rgba(163, 184, 174, 0.1);
     color: var(--primary);
     border: 1px solid var(--primary);
@@ -344,12 +406,6 @@ body::before {
     border-radius: var(--radius);
     font-size: 1rem;
     font-weight: 600;
-    cursor: pointer;
-    transition: var(--transition);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
     backdrop-filter: blur(10px);
 }
 
@@ -368,12 +424,6 @@ body::before {
     border-radius: var(--radius);
     font-size: 0.9rem;
     font-weight: 500;
-    cursor: pointer;
-    transition: var(--transition);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
 }
 
 .btn-secondary:hover {
@@ -552,19 +602,12 @@ body::before {
 }
 
 .ritual-card {
-    background: var(--bg-surface);
     backdrop-filter: blur(12px);
-    border: 1px solid var(--border-color);
     padding: 3.5rem 2.5rem; /* Sabit üst boşluk (anchor) */
-    border-radius: var(--radius-lg);
     margin-bottom: 2rem;
     text-align: center;
     transition: none;
     height: 380px; 
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start; 
-    align-items: center;
     width: 100%;
     position: relative;
     overflow: hidden;
@@ -585,9 +628,6 @@ body::before {
     margin: 0 0 1.5rem; /* Üst margin kaldırıldı çünkü padding-top (flex-start) kullanıyoruz */
     height: 48px;
     flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     filter: drop-shadow(0 0 10px var(--primary-glow));
 }
 
@@ -641,13 +681,8 @@ body::before {
 
 /* Sidebar Styles */
 .ritual-sidebar {
-    background: var(--bg-surface);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-lg);
     padding: 1.5rem;
     max-height: 600px;
-    display: flex;
-    flex-direction: column;
     backdrop-filter: blur(8px);
     overflow: hidden;
 }
@@ -826,8 +861,6 @@ body::before {
     border-radius: var(--radius);
     font-size: 1.1rem;
     font-weight: 600;
-    cursor: pointer;
-    transition: var(--transition);
     box-shadow: 0 0 20px var(--primary-glow);
 }
 
@@ -921,7 +954,6 @@ body::before {
 
 .complete-card {
     padding: 2.5rem;
-    border-radius: var(--radius-lg);
     background: rgba(255, 255, 255, 0.02);
 }
 
@@ -994,29 +1026,13 @@ body::before {
 /* ========================================
    Break Screen (Premium Design)
 ======================================== */
-.break-overlay {
-    position: fixed;
-    inset: 0;
-    backdrop-filter: blur(20px);
-    background: rgba(10, 12, 16, 0.85);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
+
 
 .break-card {
-    background: var(--bg-surface);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-lg);
     padding: 3rem;
     width: 90%;
     max-width: 440px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     gap: 2rem;
-    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
     animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     position: relative;
     overflow: hidden;
@@ -1107,18 +1123,11 @@ body::before {
 }
 
 .btn-premium-secondary {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid var(--border-color);
-    border-radius: var(--radius);
     padding: 1.25rem;
     color: var(--text-secondary);
     font-weight: 600;
-    transition: all 0.3s ease;
 }
 
 .btn-premium-secondary:hover {
@@ -1174,30 +1183,13 @@ body::before {
 /* ========================================
    Overlays & Modals
 ======================================== */
-.energy-check, .break-overlay {
-    position: fixed;
-    inset: 0;
-    backdrop-filter: blur(20px);
-    background: rgba(10, 12, 16, 0.85);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
+
 
 .energy-card {
-    background: var(--bg-surface);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-lg);
     padding: 3rem;
     width: 90%;
     max-width: 440px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     gap: 2rem;
-    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
     animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     position: relative;
     overflow: hidden;
@@ -1307,14 +1299,8 @@ body::before {
 
 /* Log Modal */
 .log-overlay {
-    position: fixed;
-    inset: 0;
     backdrop-filter: blur(8px);
     background: rgba(10, 12, 16, 0.85);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 2000;
     opacity: 1;
     transition: opacity 0.3s ease;
 }
@@ -1327,15 +1313,9 @@ body::before {
 }
 
 .log-card {
-    background: var(--bg-surface);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-lg);
     width: 90%;
     max-width: 600px;
     max-height: 80vh;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
     transform: translateY(0);
     transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -1383,7 +1363,7 @@ body::before {
     border-radius: 10px;
 }
 
-.hidden { display: none !important; }
+
 
 /* Break Stats (Minimal) */
 .focus-break-stats {
