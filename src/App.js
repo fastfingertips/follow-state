@@ -39,15 +39,9 @@ export class FlowApp {
     }
     
     init() {
-        this.renderShell();
-        this.cacheElements();
-        this.updateUIText();
-        this.setIcons();
-        this.bindEvents(true); // Bind everything initially
-        this.updateStatsDisplay();
+        this.refreshUI(true);
         this.selectRandomRitual();
-        this.addSVGGradient();
-        this.showScreen('welcome'); // Show welcome screen explicitly
+        this.showScreen('welcome'); 
         
         // Soft focus: Wait for screen fade animation to complete
         setTimeout(() => {
@@ -55,6 +49,16 @@ export class FlowApp {
         }, CONFIG.UI.SOFT_FOCUS_DELAY);
 
         initFullscreen('fullscreenToggle');
+    }
+
+    refreshUI(isInitial = false) {
+        this.renderShell();
+        this.cacheElements();
+        this.updateUIText();
+        this.setIcons();
+        this.bindEvents(isInitial);
+        this.updateStatsDisplay();
+        this.addSVGGradient();
     }
 
     renderShell() {
@@ -114,7 +118,6 @@ export class FlowApp {
         this.endSessionBtn = document.getElementById('endSessionBtn');
         this.energyCheck = document.getElementById('energyCheck');
         this.sessionDuration = document.getElementById('sessionDuration');
-        this.sessionGoal = document.getElementById('sessionGoal');
         this.sessionGoal = document.getElementById('sessionGoal');
         this.takeBreakBtn = document.getElementById('takeBreakBtn');
         this.newSessionBtn = document.getElementById('newSessionBtn');
@@ -230,19 +233,25 @@ export class FlowApp {
     
     updateUIText() {
         document.documentElement.lang = i18n.getCurrentLang();
-        document.getElementById('logoText').textContent = i18n.t('appName');
-        document.getElementById('sessionsLabel').textContent = i18n.t('sessions');
-        document.getElementById('minutesLabel').textContent = i18n.t('minutes');
-        document.getElementById('langText').textContent = i18n.getCurrentLang().toUpperCase();
         
-        const copyLogText = document.getElementById('copyLogText');
-        if (copyLogText) copyLogText.textContent = i18n.t('copyLog');
-        
-        const downloadLogText = document.getElementById('downloadLogText');
-        if (downloadLogText) downloadLogText.textContent = i18n.t('downloadLog');
+        const textUpdates = {
+            logoText: 'appName',
+            sessionsLabel: 'sessions',
+            minutesLabel: 'minutes',
+            copyLogText: 'copyLog',
+            downloadLogText: 'downloadLog',
+            customRitualText: 'customRitual',
+            extendBreakText: 'extendBreak',
+            endBreakText: 'endBreak',
+            allRitualsLabel: 'allRituals'
+        };
 
-        const customRitualText = document.getElementById('customRitualText');
-        if (customRitualText) customRitualText.textContent = i18n.t('customRitual');
+        Object.entries(textUpdates).forEach(([id, tKey]) => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = i18n.t(tKey);
+        });
+
+        document.getElementById('langText').textContent = i18n.getCurrentLang().toUpperCase();
         
         if (this.ritualInput) this.ritualInput.placeholder = i18n.t('customRitualPlaceholder');
 
@@ -251,68 +260,60 @@ export class FlowApp {
             const timeDisplay = totalMins > 0 ? `${totalMins}m` : `${this.totalBreakSeconds}s`;
             this.focusBreakStats.textContent = i18n.t('breakTime', { time: timeDisplay });
         }
-
-        const extendBreakText = document.getElementById('extendBreakText');
-        if (extendBreakText) extendBreakText.textContent = i18n.t('extendBreak');
         
-        const endBreakText = document.getElementById('endBreakText');
-        if (endBreakText) endBreakText.textContent = i18n.t('endBreak');
-        
-        // Render ritual options
         this.renderRitualOptions();
     }
     
     setIcons() {
-        document.getElementById('logoIcon').innerHTML = getIcon('focus', 28);
-        document.getElementById('fullscreenIcon').innerHTML = getIcon('maximize', 18);
-        document.getElementById('langIcon').innerHTML = getIcon('globe', 16);
-        document.getElementById('startBtnIcon').innerHTML = getIcon('arrowRight', 20);
-        document.getElementById('newRitualIcon').innerHTML = getIcon('refresh', 18);
-        document.getElementById('customRitualIcon').innerHTML = getIcon('penTool', 18);
-        document.getElementById('ritualDoneIcon').innerHTML = getIcon('check', 18);
-        document.getElementById('start90Icon').innerHTML = getIcon('rocket', 20);
-        this.pauseBtn.innerHTML = getIcon('pause', 24);
-        this.focusBreakBtn.innerHTML = getIcon('coffee', 24);
-        this.endSessionBtn.innerHTML = getIcon('stop', 24);
-        document.getElementById('energyIcon').innerHTML = getIcon('battery', 40);
-        document.getElementById('energyGoodIcon').innerHTML = getIcon('zap', 20);
-        document.getElementById('energyMidIcon').innerHTML = getIcon('meh', 20);
-        document.getElementById('energyLowIcon').innerHTML = getIcon('moon', 20);
-        document.getElementById('completeIcon').innerHTML = getIcon('trophy', 64);
-        
-        // Header Icons
-        document.getElementById('themeIcon').innerHTML = getIcon('sun', 16);
-        
-        document.getElementById('durationIcon').innerHTML = getIcon('timer', 28);
-        document.getElementById('goalIcon').innerHTML = getIcon('target', 28);
-        document.getElementById('takeBreakIcon').innerHTML = getIcon('coffee', 18);
-        document.getElementById('newSessionIcon').innerHTML = getIcon('refresh', 18);
-        document.getElementById('breakIcon').innerHTML = getIcon('coffee', 64);
-        document.getElementById('extendBreakIcon').innerHTML = getIcon('plus', 18);
-        
-        // Log Icons
-        const copyLogIcon = document.getElementById('copyLogIcon');
-        if (copyLogIcon) copyLogIcon.innerHTML = getIcon('copy', 14);
-        
-        const viewLogIcon = document.getElementById('viewLogIcon');
-        if (viewLogIcon) viewLogIcon.innerHTML = getIcon('list', 14);
-        
-        const downloadLogIcon = document.getElementById('downloadLogIcon');
-        if (downloadLogIcon) downloadLogIcon.innerHTML = getIcon('download', 14);
+        const iconUpdates = {
+            logoIcon: { name: 'focus', size: 28 },
+            fullscreenIcon: { name: 'maximize', size: 18 },
+            langIcon: { name: 'globe', size: 16 },
+            startBtnIcon: { name: 'arrowRight', size: 20 },
+            newRitualIcon: { name: 'refresh', size: 18 },
+            customRitualIcon: { name: 'penTool', size: 18 },
+            ritualDoneIcon: { name: 'check', size: 18 },
+            start90Icon: { name: 'rocket', size: 20 },
+            energyIcon: { name: 'battery', size: 40 },
+            energyGoodIcon: { name: 'zap', size: 20 },
+            energyMidIcon: { name: 'meh', size: 20 },
+            energyLowIcon: { name: 'moon', size: 20 },
+            completeIcon: { name: 'trophy', size: 64 },
+            themeIcon: { name: 'sun', size: 16 },
+            durationIcon: { name: 'timer', size: 28 },
+            goalIcon: { name: 'target', size: 28 },
+            takeBreakIcon: { name: 'coffee', size: 18 },
+            newSessionIcon: { name: 'refresh', size: 18 },
+            breakIcon: { name: 'coffee', size: 64 },
+            extendBreakIcon: { name: 'plus', size: 18 },
+            copyLogIcon: { name: 'copy', size: 14 },
+            viewLogIcon: { name: 'list', size: 14 },
+            downloadLogIcon: { name: 'download', size: 14 },
+            closeLogIcon: { name: 'x', size: 24 },
+            footerVersionIcon: { name: 'hash', size: 14 },
+            footerUserIcon: { name: 'user', size: 14 },
+            footerGithubIcon: { name: 'github', size: 14 }
+        };
 
-        const closeLogIcon = document.getElementById('closeLogIcon');
-        if (closeLogIcon) closeLogIcon.innerHTML = getIcon('x', 24);
+        Object.entries(iconUpdates).forEach(([id, config]) => {
+            const el = document.getElementById(id);
+            if (el) el.innerHTML = getIcon(config.name, config.size);
+        });
 
-        // Footer Icons
-        document.getElementById('footerVersionIcon').innerHTML = getIcon('hash', 14);
-        document.getElementById('footerUserIcon').innerHTML = getIcon('user', 14);
-        document.getElementById('footerGithubIcon').innerHTML = getIcon('github', 14);
+        // Direct element references
+        if (this.pauseBtn) this.pauseBtn.innerHTML = getIcon('pause', 24);
+        if (this.focusBreakBtn) this.focusBreakBtn.innerHTML = getIcon('coffee', 24);
+        if (this.endSessionBtn) this.endSessionBtn.innerHTML = getIcon('stop', 24);
         
         // Quick goal icons
-        document.querySelector('[data-goal="quickCode"] .quick-icon').innerHTML = getIcon('code', 16);
-        document.querySelector('[data-goal="quickDesign"] .quick-icon').innerHTML = getIcon('palette', 16);
-        document.querySelector('[data-goal="quickWriting"] .quick-icon').innerHTML = getIcon('penTool', 16);
-        document.querySelector('[data-goal="quickLearning"] .quick-icon').innerHTML = getIcon('bookOpen', 16);
+        document.querySelectorAll('.quick-goal').forEach(btn => {
+            const icon = btn.querySelector('.quick-icon');
+            const goal = btn.dataset.goal;
+            const iconName = goal === 'quickCode' ? 'code' : 
+                            goal === 'quickDesign' ? 'palette' : 
+                            goal === 'quickWriting' ? 'penTool' : 'bookOpen';
+            if (icon) icon.innerHTML = getIcon(iconName, 16);
+        });
     }
     
     renderRitualOptions() {
@@ -340,13 +341,7 @@ export class FlowApp {
         const newLang = i18n.getCurrentLang() === 'en' ? 'tr' : 'en';
         i18n.setLanguage(newLang);
         
-        // Re-render components to apply new translations
-        this.renderShell();
-        this.cacheElements();
-        this.updateUIText();
-        this.setIcons();
-        this.bindEvents(false); // Only bind screen events, not static ones
-        this.updateStatsDisplay();
+        this.refreshUI(false);
         
         // Restore previous state
         this.showScreen(savedScreen);
@@ -365,7 +360,6 @@ export class FlowApp {
         }
 
         this.selectRitual(this.currentRitualIndex);
-        this.addSVGGradient();
     }
     
     showScreen(screenName) {
