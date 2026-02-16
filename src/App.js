@@ -8,6 +8,7 @@ import i18n from './core/i18n.js';
 import { getIcon, getRitualIcon } from './core/icons.js';
 import { loadStats, saveStats } from './core/storage.js';
 import { initFullscreen } from './core/fullscreen.js';
+import { Timer } from './core/timer.js';
 
 // Import Components
 import { Welcome } from './components/Welcome.js';
@@ -300,6 +301,10 @@ export class FlowApp {
             if (el) el.innerHTML = getIcon(config.name, config.size);
         });
 
+        // Update timer UI references in timers if they exist
+        if (this.ninetyTimer) this.ninetyTimer.ui = this.ninetyTime;
+        if (this.breakTimer) this.breakTimer.ui = this.breakTimerDisplay;
+
         // Direct element references
         if (this.pauseBtn) this.pauseBtn.innerHTML = getIcon('pause', 24);
         if (this.focusBreakBtn) this.focusBreakBtn.innerHTML = getIcon('coffee', 24);
@@ -335,9 +340,8 @@ export class FlowApp {
     toggleLanguage() {
         const savedScreen = this.currentScreen;
         const savedGoal = this.goalInput ? this.goalInput.value : '';
-        const isNinetyRunning = this.ninetyTimer !== null;
-        const savedNinetyTime = this.ninetyTime ? this.ninetyTime.textContent : null;
-
+        const isNinetyRunning = this.ninetyTimer && this.ninetyTimer.interval !== null;
+        
         const newLang = i18n.getCurrentLang() === 'en' ? 'tr' : 'en';
         i18n.setLanguage(newLang);
         
@@ -356,7 +360,6 @@ export class FlowApp {
         if (isNinetyRunning && this.start90Btn) {
             this.start90Btn.disabled = true;
             document.getElementById('start90Text').textContent = i18n.t('continuing');
-            if (savedNinetyTime) this.ninetyTime.textContent = savedNinetyTime;
         }
 
         this.selectRitual(this.currentRitualIndex);
@@ -488,6 +491,7 @@ export class FlowApp {
     }
     
     resetNinetyTimer() {
+        if (this.ninetyTimer) this.ninetyTimer.stop();
         this.ninetyTime.textContent = CONFIG.TIMERS.NINETY_SECONDS_RULE;
         this.setProgress(0);
         document.getElementById('start90Text').textContent = i18n.t('start90');
@@ -495,26 +499,26 @@ export class FlowApp {
     }
     
     start90Seconds() {
-        let seconds = CONFIG.TIMERS.NINETY_SECONDS_RULE;
         this.start90Btn.disabled = true;
         document.getElementById('start90Text').textContent = i18n.t('continuing');
         
-        this.ninetyTimer = setInterval(() => {
-            seconds--;
-            this.ninetyTime.textContent = seconds;
-            this.setProgress((CONFIG.TIMERS.NINETY_SECONDS_RULE - seconds) / CONFIG.TIMERS.NINETY_SECONDS_RULE);
-            
-            if (seconds <= 0) {
-                clearInterval(this.ninetyTimer);
-                this.startFocusSession();
-            } else {
+        this.ninetyTimer = new Timer({
+            duration: CONFIG.TIMERS.NINETY_SECONDS_RULE,
+            onTick: (seconds) => {
+                this.ninetyTime.textContent = seconds;
+                this.setProgress((CONFIG.TIMERS.NINETY_SECONDS_RULE - seconds) / CONFIG.TIMERS.NINETY_SECONDS_RULE);
                 document.title = `(${seconds}s) ${CONFIG.APP_NAME}`;
+            },
+            onComplete: () => {
+                this.startFocusSession();
             }
-        }, 1000);
+        });
+        
+        this.ninetyTimer.start();
     }
     
     setProgress(percent) {
-        const circumference = 2 * Math.PI * CONFIG.TIMERS.NINETY_SECONDS_RULE;
+        const circumference = 2 * Math.PI * 90; // Fixed for SVG radius 90
         const offset = circumference * (1 - percent);
         this.progressRing.style.strokeDashoffset = offset;
     }
@@ -522,7 +526,6 @@ export class FlowApp {
     startFocusSession() {
         this.showScreen('focus');
         this.currentGoalText.textContent = this.currentGoal;
-        this.focusStartTime = Date.now();
         this.isPaused = false;
         this.lastEnergyCheck = Date.now();
         
@@ -534,47 +537,40 @@ export class FlowApp {
         
         if (this.focusTimerDisplay) this.focusTimerDisplay.classList.add('breathing');
         
-        this.updateFocusTimer();
-        this.focusTimer = setInterval(() => {
-            if (!this.isPaused) {
-                this.updateFocusTimer();
+        this.focusTimer = new Timer({
+            isCountdown: false,
+            onTick: (elapsed) => {
+                const mins = Math.floor(elapsed / 60);
+                const secs = elapsed % 60;
+                const timeStr = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+                this.focusMinutes.textContent = String(mins).padStart(2, '0');
+                this.focusSeconds.textContent = String(secs).padStart(2, '0');
+                
+                if (this.isPaused) {
+                    document.title = `[Paused] ${CONFIG.APP_NAME}`;
+                } else {
+                    document.title = `${timeStr} - ${CONFIG.APP_NAME}`;
+                }
+                
                 this.checkEnergyInterval();
             }
-        }, 1000);
+        });
         
+        this.focusTimer.start();
         this.pauseBtn.innerHTML = getIcon('pause', 24);
         this.focusStatus.textContent = i18n.t('inFlow');
-    }
-    
-    updateFocusTimer() {
-        const elapsed = Math.floor((Date.now() - this.focusStartTime) / 1000);
-        const minutes = Math.floor(elapsed / 60);
-        const seconds = elapsed % 60;
-        const timeStr = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-        this.focusMinutes.textContent = String(minutes).padStart(2, '0');
-        this.focusSeconds.textContent = String(seconds).padStart(2, '0');
-        
-        if (this.isPaused) {
-            document.title = `[Paused] ${CONFIG.APP_NAME}`;
-        } else {
-            document.title = `${timeStr} - ${CONFIG.APP_NAME}`;
-        }
     }
     
     togglePause() {
         this.isPaused = !this.isPaused;
         if (this.isPaused) {
-            this.pauseStartTime = Date.now();
+            this.focusTimer.pause();
             this.pauseBtn.innerHTML = getIcon('play', 24);
             this.focusStatus.textContent = i18n.t('paused');
             this.focusStatus.style.color = 'var(--warning)';
             if (this.focusTimerDisplay) this.focusTimerDisplay.classList.remove('breathing');
         } else {
-            if (this.pauseStartTime) {
-                const pausedDuration = Date.now() - this.pauseStartTime;
-                this.focusStartTime += pausedDuration;
-                this.pauseStartTime = null;
-            }
+            this.focusTimer.resume();
             this.pauseBtn.innerHTML = getIcon('pause', 24);
             this.focusStatus.textContent = i18n.t('inFlow');
             this.focusStatus.style.color = '';
@@ -589,8 +585,8 @@ export class FlowApp {
     }
     
     showEnergyCheck() {
+        this.focusTimer.pause();
         this.isPaused = true;
-        this.pauseStartTime = Date.now();
         this.energyCheck.classList.remove('hidden');
     }
     
@@ -602,12 +598,7 @@ export class FlowApp {
             this.handleImmediateBreak();
         } else {
             this.isPaused = false;
-            // Adjust start time for the pause duration during energy check
-            if (this.pauseStartTime) {
-                const pausedDuration = Date.now() - this.pauseStartTime;
-                this.focusStartTime += pausedDuration;
-                this.pauseStartTime = null;
-            }
+            this.focusTimer.resume();
             this.focusStatus.textContent = level === 'good' ? i18n.t('energyHigh') : i18n.t('continuing2');
             setTimeout(() => { if (!this.isPaused) this.focusStatus.textContent = i18n.t('inFlow'); }, CONFIG.UI.ENERGY_FEEDBACK_DURATION);
         }
@@ -616,13 +607,13 @@ export class FlowApp {
     handleImmediateBreak() {
         // Just start break, don't end session
         this.isPaused = true;
-        this.pauseStartTime = Date.now();
+        // Timer is already paused by showEnergyCheck
         this.startBreak();
     }
     
     endSession(isImmediateBreak = false) {
-        clearInterval(this.focusTimer);
-        const elapsedSeconds = Math.floor((Date.now() - this.focusStartTime) / 1000);
+        if (this.focusTimer) this.focusTimer.stop();
+        const elapsedSeconds = this.focusTimer ? this.focusTimer.elapsedSeconds : 0;
         const durationMinutes = Math.floor(elapsedSeconds / 60);
         const durationSeconds = elapsedSeconds % 60;
         
@@ -648,41 +639,43 @@ export class FlowApp {
         const breakTips = i18n.getBreakTips();
         this.breakTip.textContent = breakTips[Math.floor(Math.random() * breakTips.length)];
         
-        this.breakSeconds = CONFIG.TIMERS.DEFAULT_BREAK_DURATION;
-        this.breakTotalDuration = CONFIG.TIMERS.DEFAULT_BREAK_DURATION;
-        this.updateBreakTimer(this.breakSeconds);
+        this.breakTimer = new Timer({
+            duration: CONFIG.TIMERS.DEFAULT_BREAK_DURATION,
+            onTick: (seconds) => {
+                this.updateBreakTimerUI(seconds);
+            },
+            onComplete: () => {
+                this.endBreak();
+            }
+        });
         
-        this.breakTimer = setInterval(() => {
-            this.breakSeconds--;
-            this.updateBreakTimer(this.breakSeconds);
-            if (this.breakSeconds <= 0) this.endBreak();
-        }, 1000);
+        this.breakTimer.start();
     }
     
     extendBreak() {
-        this.breakSeconds += CONFIG.TIMERS.BREAK_EXTENSION;
-        this.breakTotalDuration += CONFIG.TIMERS.BREAK_EXTENSION;
-        this.updateBreakTimer(this.breakSeconds);
+        if (this.breakTimer) {
+            this.breakTimer.extend(CONFIG.TIMERS.BREAK_EXTENSION);
+            this.updateBreakTimerUI(this.breakTimer.remainingSeconds);
+        }
     }
     
-    updateBreakTimer(seconds) {
-        const total = this.breakTotalDuration || CONFIG.TIMERS.DEFAULT_BREAK_DURATION;
+    updateBreakTimerUI(seconds) {
         const mins = Math.floor(seconds / 60);
         const secs = seconds % 60;
         const timeStr = `${mins}:${String(secs).padStart(2, '0')}`;
         this.breakTimerDisplay.textContent = timeStr;
         document.title = `☕ ${timeStr} - ${CONFIG.APP_NAME}`;
         
-        // Update break progress ring
         if (this.breakProgressRing) {
             const circumference = 283; // 2 * PI * 45
+            const total = this.breakTimer.duration;
             const offset = circumference * (1 - seconds / total);
             this.breakProgressRing.style.strokeDashoffset = offset;
         }
     }
     
     endBreak() {
-        clearInterval(this.breakTimer);
+        if (this.breakTimer) this.breakTimer.stop();
         
         if (this.breakStartTime) {
             const breakDuration = Math.floor((Date.now() - this.breakStartTime) / 1000);
@@ -705,17 +698,11 @@ export class FlowApp {
         
         // Resume session
         this.isPaused = false;
-        
-        // Adjust start time for the break duration
-        if (this.pauseStartTime) {
-            const pausedDuration = Date.now() - this.pauseStartTime;
-            this.focusStartTime += pausedDuration;
-            this.pauseStartTime = null;
-        }
+        if (this.focusTimer) this.focusTimer.resume();
 
         this.lastEnergyCheck = Date.now(); // Reset energy check timer
-        this.updateFocusTimer(); // Refresh title and status
-        document.title = `${this.focusMinutes.textContent}:${this.focusSeconds.textContent} - ${CONFIG.APP_NAME}`;
+        const timeStr = `${this.focusMinutes.textContent}:${this.focusSeconds.textContent}`;
+        document.title = `${timeStr} - ${CONFIG.APP_NAME}`;
     }
     
     resetToWelcome() {
