@@ -67,7 +67,7 @@ export class UIManager {
             'breakProgressRing', 'extendBreakBtn', 'endBreakBtn', 'logOverlay',
             'closeLogBtn', 'logContentArea', 'totalSessions', 'totalMinutes',
             'langToggle', 'themeToggle', 'energyGood', 'energyMid', 'energyLow',
-            'start90Text', 'copyLogText'
+            'start90Text', 'copyLogText', 'customRitualIcon', 'customRitualText'
         ];
 
         ids.forEach(id => {

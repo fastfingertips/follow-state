@@ -245,10 +245,8 @@ export class FlowApp {
             const isCustom = el.ritualText.textContent !== i18n.getRituals()[iconIndex]?.text;
             el.ritualIcon.innerHTML = isCustom ? getIcon('fileEdit', 48) : getRitualIcon(iconIndex);
             
-            const icon = document.getElementById('customRitualIcon');
-            if (icon) icon.innerHTML = getIcon('penTool', 18);
-            const text = document.getElementById('customRitualText');
-            if (text) text.textContent = i18n.t('customRitual');
+            if (el.customRitualIcon) el.customRitualIcon.innerHTML = getIcon('penTool', 18);
+            if (el.customRitualText) el.customRitualText.textContent = i18n.t('customRitual');
         } else {
             el.ritualInputWrapper.classList.remove('hidden');
             el.ritualText.classList.add('hidden');
@@ -256,10 +254,8 @@ export class FlowApp {
             
             el.ritualIcon.innerHTML = getIcon('fileEdit', 48);
             
-            const icon = document.getElementById('customRitualIcon');
-            if (icon) icon.innerHTML = getIcon('x', 18);
-            const text = document.getElementById('customRitualText');
-            if (text) text.textContent = i18n.t('cancel');
+            if (el.customRitualIcon) el.customRitualIcon.innerHTML = getIcon('x', 18);
+            if (el.customRitualText) el.customRitualText.textContent = i18n.t('cancel');
         }
     }
 

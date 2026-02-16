@@ -258,9 +258,11 @@ body::before {
 }
 
 .logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
     font-weight: 500;
     letter-spacing: -0.025em;
-    gap: 0.75rem;
 }
 
 .logo-icon {
@@ -602,12 +604,19 @@ body::before {
 }
 
 .ritual-card {
+    background: var(--bg-surface);
     backdrop-filter: blur(12px);
+    border: 1px solid var(--border-color);
     padding: 3.5rem 2.5rem; /* Sabit üst boşluk (anchor) */
+    border-radius: var(--radius-lg);
     margin-bottom: 2rem;
     text-align: center;
     transition: none;
-    height: 380px; 
+    height: 380px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
     width: 100%;
     position: relative;
     overflow: hidden;
@@ -628,6 +637,9 @@ body::before {
     margin: 0 0 1.5rem; /* Üst margin kaldırıldı çünkü padding-top (flex-start) kullanıyoruz */
     height: 48px;
     flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     filter: drop-shadow(0 0 10px var(--primary-glow));
 }
 
@@ -681,8 +693,13 @@ body::before {
 
 /* Sidebar Styles */
 .ritual-sidebar {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
     padding: 1.5rem;
     max-height: 600px;
+    display: flex;
+    flex-direction: column;
     backdrop-filter: blur(8px);
     overflow: hidden;
 }
@@ -953,8 +970,11 @@ body::before {
 }
 
 .complete-card {
+    background: var(--bg-surface);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border-color);
     padding: 2.5rem;
-    background: rgba(255, 255, 255, 0.02);
+    border-radius: var(--radius-lg);
 }
 
 .stats-grid {
